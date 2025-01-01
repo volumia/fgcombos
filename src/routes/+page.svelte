@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { _ } from "svelte-i18n";
     import type { Move, ComboSnapshot, ComboResult } from "@/moveTypes";
     import SelectMoveModal from "./SelectMoveModal.svelte";
     import { moveset } from "@/data/moveset";
@@ -42,14 +43,17 @@
     }
 </script>
 
+<h1>{$_(`characters.${moveset.characterId}.name`)}</h1>
+
 <table>
     <thead>
         <tr>
-            <th>Move</th>
-            <th>Base damage</th>
-            <th>Multiplier</th>
-            <th>Proration</th>
-            <th>Final damage</th>
+            <th>{$_("edit.colHead.move")}</th>
+            <th>{$_("edit.colHead.baseDamage")}</th>
+            <th>{$_("edit.colHead.multiplier")}</th>
+            <th>{$_("edit.colHead.proration")}</th>
+            <th>{$_("edit.colHead.finalDamage")}</th>
+            <th class="deleteButtonsColumn"></th>
         </tr>
     </thead>
     <tbody>
@@ -60,6 +64,7 @@
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
                 <td>{Math.trunc(snap.finalDamage)}</td>
+                <td><button onclick={() => moves.splice(i, 1)}>X</button></td>
             </tr>
         {/each}
     </tbody>
@@ -67,22 +72,39 @@
 
 {#if isSelectingMove}
     <SelectMoveModal
-        moveset={moveset}
+        moveList={moveset.moves}
         onAddMove={addMove}
     >
     </SelectMoveModal>
 {:else}
-    <button onclick={openAddModal}>+ Add move</button>
+    <button onclick={openAddModal}>+ {$_("edit.addMove")}</button>
 {/if}
 
-<div>Total damage: {Math.trunc(result.totalDamage)}</div>
+<div>{$_("edit.totalDamage")} {Math.trunc(result.totalDamage)}</div>
 
-<style>
+<style lang="scss">
+    @use "@/style/variables" as *;
+    
     table {
         border-collapse: collapse;
+        
+        button {
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: 100%;
+        }
     }
     
     table, th, td {
         border: 1px solid black;
+    }
+
+    th, td {
+        padding: $spacing-2;
+    }
+
+    .deleteButtonsColumn {
+        width: 5ch;
     }
 </style>

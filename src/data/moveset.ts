@@ -1,6 +1,7 @@
 import type { Moveset } from "@/moveTypes";
 
 export const moveset: Moveset = {
+    characterId: "ryu-sf3ts",
     moves: [
         {
             name: "Light Punch",

@@ -6,6 +6,7 @@ export type Move = Readonly<{
 }>;
 
 export type Moveset = Readonly<{
+    characterId: string,
     moves: Move[]
 }>;
 

@@ -1,17 +1,18 @@
 <script lang="ts">
+    import { _ } from "svelte-i18n";
     import Fuse from "fuse.js";
-    import type { Move, Moveset } from "@/moveTypes";
+    import type { Move } from "@/moveTypes";
     import type { Action } from "svelte/action";
     import Icon from "@/common/components/Icon.svelte";
 
     type Props = {
-        moveset: Moveset;
+        moveList: Move[];
         onAddMove: (move: Move) => void;
     };
+    let { moveList, onAddMove }: Props = $props();
 
-    let { moveset, onAddMove }: Props = $props();
     let searchQuery: string = $state("");
-    const fuse = new Fuse(moveset.moves, {
+    const fuse = new Fuse(moveList, {
         threshold: 0.2,
         keys: ["name", "notation"]
     });
@@ -20,13 +21,13 @@
     let isSearchEmpty = $derived(searchQuery.trim() === "");
 
     $effect(() => {
-        selectableMoves; // Re-run this effect when selectableMoves updates
+        selectableMoves; // Hack to re-run this effect when selectableMoves updates
         selectedMoveIndex = 0;
     });
 
     function getFilteredMoves(query: string): Move[] {
         if (isSearchEmpty) {
-            return moveset.moves;
+            return moveList;
         } else {
             const result = fuse.search<Move>(query);
             return result.map((r) => r.item);
@@ -65,7 +66,7 @@
             type="search"
             id="search"
             name="search"
-            placeholder="Search moves"
+            placeholder={$_("edit.searchPlaceholder")}
             autocomplete="off"
             autofocus={true}
             onkeydown={onSearchKeyPress}
@@ -98,6 +99,7 @@
 
 <style lang="scss">
     @use "@/style/variables" as *;
+    
     .modal {
         width: fit-content;
         padding: $spacing-1;
@@ -149,9 +151,5 @@
                 color: rgb(73, 73, 73);
             }
         }
-    }
-
-    svg {
-        color: inherit;
     }
 </style>
