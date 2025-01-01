@@ -57,5 +57,11 @@ export const moveset: Moveset = {
             baseDamage: 110,
             proration: 0.6
         },
+        {
+            name: "Shin Shoryuken",
+            notation: "236236P (SA2)",
+            baseDamage: 940,
+            proration: 0.2
+        },
     ]
 };

@@ -4,6 +4,7 @@
     import type { Move } from "@/moveTypes";
     import type { Action } from "svelte/action";
     import Icon from "@/common/components/Icon.svelte";
+    import { scrollY } from "svelte/reactivity/window";
 
     type Props = {
         moveList: Move[];
@@ -17,14 +18,10 @@
         threshold: 0.2,
         keys: ["name", "notation"]
     });
-    let selectableMoves: Move[] = $derived(getFilteredMoves(searchQuery));
+    let filteredMoves: Move[] = $derived(getFilteredMoves(searchQuery));
     let selectedMoveIndex = $state(0);
     let isSearchEmpty = $derived(searchQuery.trim() === "");
-
-    $effect(() => {
-        selectableMoves; // Hack to re-run this effect when selectableMoves updates
-        selectedMoveIndex = 0;
-    });
+    let moveListElement: Element | undefined = $state(undefined);
 
     function getFilteredMoves(query: string): Move[] {
         if (isSearchEmpty) {
@@ -38,12 +35,12 @@
     function onSearchSubmit(e: SubmitEvent) {
         e.preventDefault();
 
-        if (selectableMoves.length > 0) {
-            onConfirm(selectableMoves[selectedMoveIndex]);
+        if (filteredMoves.length > 0) {
+            onConfirm(filteredMoves[selectedMoveIndex]);
         }
     }
 
-    function onSearchKeyPress(e: KeyboardEvent) {
+    function onModalKeyPress(e: KeyboardEvent) {
         if (e.code === "ArrowUp") {
             selectedMoveIndex--;
             e.preventDefault();
@@ -55,53 +52,75 @@
         if (e.code === "Escape") {
             onCancel();
         }
-        if (selectedMoveIndex >= selectableMoves.length) {
-            selectedMoveIndex = selectableMoves.length - 1;
+        if (selectedMoveIndex >= filteredMoves.length) {
+            selectedMoveIndex = filteredMoves.length - 1;
         }
         if (selectedMoveIndex < 0) {
             selectedMoveIndex = 0;
         }
     }
+
+    function focusElement(el: HTMLElement) {
+        el.focus();
+    }
+
+    // Select the first move in the list whenever the filtered move list changes.
+    $effect(() => {
+        filteredMoves; // Re-run this effect when selectableMoves updates
+        selectedMoveIndex = 0;
+    });
+
+    // Scroll the selected (not the same as page focus) move into view when navigating with arrow keys.
+    $effect(() => {
+        if (moveListElement) {
+            const moveEl = moveListElement.children[selectedMoveIndex];
+            if (moveEl) {
+                moveEl.scrollIntoView({block: "nearest"});
+            }
+        }
+    });
 </script>
 
 <div class="modal">
-    <div class="toolbar">
-        <form class="searchForm" onsubmit={onSearchSubmit}>
-            <input
-            type="search"
-            id="search"
-            name="search"
-            placeholder={$_("edit.searchPlaceholder")}
-            autocomplete="off"
-            autofocus={true}
-            onkeydown={onSearchKeyPress}
-            bind:value={searchQuery}
-            />
-            <input type="submit" hidden />
-        </form>
-        <button class="cancel" onclick={onCancel}><Icon src="./icons/close.svg"></Icon></button>
+    <div onkeydown={onModalKeyPress} role="presentation">
+        <div class="toolbar">
+            <form class="searchForm" onsubmit={onSearchSubmit}>
+                <input
+                    type="search"
+                    id="search"
+                    name="search"
+                    placeholder={$_("edit.searchPlaceholder")}
+                    autocomplete="off"
+                    use:focusElement
+                    bind:value={searchQuery}
+                />
+                <input type="submit" hidden />
+            </form>
+            <button class="cancel" onclick={onCancel}><Icon src="./icons/close.svg"></Icon></button>
+        </div>
+        <div class="move-list" bind:this={moveListElement}>
+            {#each filteredMoves as move, i}
+                <button
+                    class={i == selectedMoveIndex ? "move selected" : "move"}
+                    onclick={() => onConfirm(move)}
+                >
+                    <div class="line">
+                        <div>{move.notation}</div>
+                        <div class="name">{move.name}</div>
+                        <div class="filler"></div>
+                        <div class="damage">
+                            <Icon src={"./icons/fist.svg"}></Icon>
+                            {move.baseDamage}
+                        </div>
+                        <div class="proration">
+                            <Icon src={"./icons/trend-down.svg"}></Icon>
+                            {move.proration * 100}%
+                        </div>
+                    </div>
+                </button>
+            {/each}
+        </div>
     </div>
-
-    {#each selectableMoves as move, i}
-        <button
-            class={i == selectedMoveIndex ? "move selected" : "move"}
-            onclick={() => onConfirm(move)}
-        >
-            <div class="line">
-                <div>{move.notation}</div>
-                <div class="name">{move.name}</div>
-                <div class="filler"></div>
-                <div class="damage">
-                    <Icon src={"./icons/fist.svg"}></Icon>
-                    {move.baseDamage}
-                </div>
-                <div class="proration">
-                    <Icon src={"./icons/trend-down.svg"}></Icon>
-                    {move.proration * 100}%
-                </div>
-            </div>
-        </button>
-    {/each}
 </div>
 
 <style lang="scss">
@@ -114,7 +133,7 @@
     }
     
     .modal {
-        width: fit-content;
+        max-width: 400px;
         padding: $spacing-1;
 
         font-size: 1em;
@@ -143,6 +162,11 @@
                 height: 100%;
             }
         }
+    }
+
+    .move-list {
+        max-height: 200px;
+        overflow-y: scroll;
     }
 
     button.move {
