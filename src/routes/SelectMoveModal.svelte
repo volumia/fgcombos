@@ -1,13 +1,13 @@
 <script lang="ts">
     import Fuse from "fuse.js";
-	import type { Move, Moveset } from "@/moveTypes";
+    import type { Move, Moveset } from "@/moveTypes";
     import type { Action } from "svelte/action";
     import Icon from "@/common/components/Icon.svelte";
 
     type Props = {
         moveset: Moveset;
         onAddMove: (move: Move) => void;
-    }
+    };
 
     let { moveset, onAddMove }: Props = $props();
     let searchQuery: string = $state("");
@@ -16,44 +16,67 @@
         keys: ["name", "notation"]
     });
     let selectableMoves: Move[] = $derived(getFilteredMoves(searchQuery));
+    let selectedMoveIndex = $state(0);
     let isSearchEmpty = $derived(searchQuery.trim() === "");
+
+    $effect(() => {
+        selectableMoves; // Re-run this effect when selectableMoves updates
+        selectedMoveIndex = 0;
+    });
 
     function getFilteredMoves(query: string): Move[] {
         if (isSearchEmpty) {
-            return moveset.moves
-        }
-        else {
+            return moveset.moves;
+        } else {
             const result = fuse.search<Move>(query);
-            return result.map(r => r.item);
+            return result.map((r) => r.item);
         }
     }
 
-    function onSubmitSearch(e: SubmitEvent) {
+    function onSearchSubmit(e: SubmitEvent) {
         e.preventDefault();
 
-        if (!isSearchEmpty && selectableMoves.length > 0) {
-            onAddMove(selectableMoves[0]);
+        if (selectableMoves.length > 0) {
+            onAddMove(selectableMoves[selectedMoveIndex]);
+        }
+    }
+
+    function onSearchKeyPress(e: KeyboardEvent) {
+        if (e.code === "ArrowUp") {
+            selectedMoveIndex--;
+            e.preventDefault();
+        }
+        if (e.code === "ArrowDown") {
+            selectedMoveIndex++;
+            e.preventDefault();
+        }
+        if (selectedMoveIndex >= selectableMoves.length) {
+            selectedMoveIndex = selectableMoves.length - 1;
+        }
+        if (selectedMoveIndex < 0) {
+            selectedMoveIndex = 0;
         }
     }
 </script>
 
 <div class="modal">
-    <form onsubmit={onSubmitSearch}>
-        <input 
-            type="search" 
-            id="search" 
-            name="search" 
-            placeholder="Search moves" 
+    <form onsubmit={onSearchSubmit}>
+        <input
+            type="search"
+            id="search"
+            name="search"
+            placeholder="Search moves"
             autocomplete="off"
             autofocus={true}
+            onkeydown={onSearchKeyPress}
             bind:value={searchQuery}
         />
         <input type="submit" hidden />
     </form>
 
     {#each selectableMoves as move, i}
-        <button 
-            class={i == 0 && !isSearchEmpty ? "move selected" : "move"}
+        <button
+            class={i == selectedMoveIndex ? "move selected" : "move"}
             onclick={() => onAddMove(move)}
         >
             <div class="line">
@@ -61,12 +84,12 @@
                 <div class="name">{move.name}</div>
                 <div class="filler"></div>
                 <div class="damage">
-                    <Icon src={"./icons/fist.svg"}></Icon> 
+                    <Icon src={"./icons/fist.svg"}></Icon>
                     {move.baseDamage}
                 </div>
                 <div class="proration">
-                    <Icon src={"./icons/trend-down.svg"}></Icon> 
-                    {move.proration*100}%
+                    <Icon src={"./icons/trend-down.svg"}></Icon>
+                    {move.proration * 100}%
                 </div>
             </div>
         </button>
@@ -92,24 +115,26 @@
 
     button.move {
         display: block;
-        
+
         width: 100%;
         margin: $spacing-1 0;
+        padding: $spacing-1;
         font-size: 1em;
 
         text-align: start;
 
         &.selected {
-            outline: 1px solid rgb(0, 219, 183);
+            border: 2px solid rgb(0, 77, 64);
+            background-color: rgb(0, 219, 183);
         }
 
         .line {
             display: flex;
             flex-direction: row;
-            gap: .5ch;
+            gap: 0.5ch;
 
             .name {
-                font-size: .8em;
+                font-size: 0.8em;
                 color: rgb(73, 73, 73);
             }
 
@@ -117,9 +142,10 @@
                 flex-grow: 1;
             }
 
-            .damage, .proration {
+            .damage,
+            .proration {
                 min-width: 6ch;
-                font-size: .8em;
+                font-size: 0.8em;
                 color: rgb(73, 73, 73);
             }
         }
