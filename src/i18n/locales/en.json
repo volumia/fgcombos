@@ -1,22 +1,23 @@
 {
-    "characters": {
-        "ryu-sf3ts": {
-            "name": "Ryu",
-            "moves": [
-
-            ]
-        }
-    },
-    "edit": {
-        "searchPlaceholder": "Search items",
-        "addMove": "Add Move",
-        "colHead": {
-            "move": "Move",
-            "baseDamage": "Base damage",
-            "multiplier": "Multiplier",
-            "proration": "Proration",
-            "finalDamage": "Final damage"
-        },
-        "totalDamage": "Total damage:"
+  "common": {
+    "cancel": "Cancel"
+  },
+  "characters": {
+    "ryu-sf3ts": {
+      "name": "Ryu",
+      "moves": []
     }
+  },
+  "edit": {
+    "searchPlaceholder": "Search items",
+    "addMove": "Add Move",
+    "colHead": {
+      "move": "Move",
+      "baseDamage": "Base damage",
+      "multiplier": "Multiplier",
+      "proration": "Proration",
+      "finalDamage": "Final damage"
+    },
+    "totalDamage": "Total damage:"
+  }
 }

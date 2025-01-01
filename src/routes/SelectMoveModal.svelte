@@ -7,9 +7,10 @@
 
     type Props = {
         moveList: Move[];
-        onAddMove: (move: Move) => void;
+        onConfirm: (move: Move) => void;
+        onCancel: () => void;
     };
-    let { moveList, onAddMove }: Props = $props();
+    let { moveList, onConfirm, onCancel }: Props = $props();
 
     let searchQuery: string = $state("");
     const fuse = new Fuse(moveList, {
@@ -38,7 +39,7 @@
         e.preventDefault();
 
         if (selectableMoves.length > 0) {
-            onAddMove(selectableMoves[selectedMoveIndex]);
+            onConfirm(selectableMoves[selectedMoveIndex]);
         }
     }
 
@@ -51,6 +52,9 @@
             selectedMoveIndex++;
             e.preventDefault();
         }
+        if (e.code === "Escape") {
+            onCancel();
+        }
         if (selectedMoveIndex >= selectableMoves.length) {
             selectedMoveIndex = selectableMoves.length - 1;
         }
@@ -61,8 +65,9 @@
 </script>
 
 <div class="modal">
-    <form onsubmit={onSearchSubmit}>
-        <input
+    <div class="toolbar">
+        <form class="searchForm" onsubmit={onSearchSubmit}>
+            <input
             type="search"
             id="search"
             name="search"
@@ -71,14 +76,16 @@
             autofocus={true}
             onkeydown={onSearchKeyPress}
             bind:value={searchQuery}
-        />
-        <input type="submit" hidden />
-    </form>
+            />
+            <input type="submit" hidden />
+        </form>
+        <button class="cancel" onclick={onCancel}><Icon src="./icons/close.svg"></Icon></button>
+    </div>
 
     {#each selectableMoves as move, i}
         <button
             class={i == selectedMoveIndex ? "move selected" : "move"}
-            onclick={() => onAddMove(move)}
+            onclick={() => onConfirm(move)}
         >
             <div class="line">
                 <div>{move.notation}</div>
@@ -99,6 +106,12 @@
 
 <style lang="scss">
     @use "@/style/variables" as *;
+
+    button {
+        margin: $spacing-1 0;
+        padding: $spacing-1;
+        font-size: 1em;
+    }
     
     .modal {
         width: fit-content;
@@ -110,19 +123,32 @@
         background-color: gray;
     }
 
-    #search {
+    .toolbar {
+        display: flex;
         width: 100%;
-        font-size: 1em;
+        height: 2em;
+        align-items: center;
+
+        .cancel {
+            height: 100%;
+            aspect-ratio: 1/1;
+        }
+
+        .searchForm {
+            height: 100%;
+            flex-grow: 1;
+
+            input {
+                width: 100%;
+                height: 100%;
+            }
+        }
     }
 
     button.move {
         display: block;
 
         width: 100%;
-        margin: $spacing-1 0;
-        padding: $spacing-1;
-        font-size: 1em;
-
         text-align: start;
 
         &.selected {

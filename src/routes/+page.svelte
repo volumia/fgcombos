@@ -1,12 +1,13 @@
 <script lang="ts">
     import { _ } from "svelte-i18n";
+    import Icon from "@/common/components/Icon.svelte";
     import type { Move, ComboSnapshot, ComboResult } from "@/moveTypes";
     import SelectMoveModal from "./SelectMoveModal.svelte";
     import { moveset } from "@/data/moveset";
     
     let moves: Move[] = $state([]);
     let result: ComboResult = $derived(resolveCombo(moves));
-    let isSelectingMove: boolean = $state(false);
+    let isSelectModalOpen: boolean = $state(false);
 
     function resolveCombo(moves: Move[]): ComboResult {
         let result: ComboResult = {
@@ -34,14 +35,23 @@
     }
 
     function openAddModal() {
-        isSelectingMove = true;
+        isSelectModalOpen = true;
     }
 
     function addMove(move: Move) {
         moves.push(move);
-        isSelectingMove = false;
+        isSelectModalOpen = false;
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+        if (e.code === "KeyA" && !isSelectModalOpen) {
+            isSelectModalOpen = true;
+            e.preventDefault();
+        }
     }
 </script>
+
+<svelte:window onkeydown={handleKeyDown} />
 
 <h1>{$_(`characters.${moveset.characterId}.name`)}</h1>
 
@@ -64,16 +74,17 @@
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
                 <td>{Math.trunc(snap.finalDamage)}</td>
-                <td><button onclick={() => moves.splice(i, 1)}>X</button></td>
+                <td><button onclick={() => moves.splice(i, 1)}><Icon src="./icons/close.svg"></Icon></button></td>
             </tr>
         {/each}
     </tbody>
 </table>
 
-{#if isSelectingMove}
+{#if isSelectModalOpen}
     <SelectMoveModal
         moveList={moveset.moves}
-        onAddMove={addMove}
+        onConfirm={addMove}
+        onCancel={() => isSelectModalOpen = false}
     >
     </SelectMoveModal>
 {:else}
