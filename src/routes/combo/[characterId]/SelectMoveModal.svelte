@@ -2,9 +2,7 @@
     import { _ } from "svelte-i18n";
     import Fuse from "fuse.js";
     import type { Move } from "@/moveTypes";
-    import type { Action } from "svelte/action";
     import Icon from "@/common/components/Icon.svelte";
-    import { scrollY } from "svelte/reactivity/window";
 
     type Props = {
         moveList: Move[];
@@ -96,7 +94,7 @@
                 />
                 <input type="submit" hidden />
             </form>
-            <button class="cancel" onclick={onCancel}><Icon src="./icons/close.svg"></Icon></button>
+            <button class="cancel" onclick={onCancel}><Icon src="/icons/close.svg"></Icon></button>
         </div>
         <div class="move-list" bind:this={moveListElement}>
             {#each filteredMoves as move, i}
@@ -109,11 +107,11 @@
                         <div class="name">{move.name}</div>
                         <div class="filler"></div>
                         <div class="damage">
-                            <Icon src={"./icons/fist.svg"}></Icon>
+                            <Icon src={"/icons/fist.svg"}></Icon>
                             {move.baseDamage}
                         </div>
                         <div class="proration">
-                            <Icon src={"./icons/trend-down.svg"}></Icon>
+                            <Icon src={"/icons/trend-down.svg"}></Icon>
                             {move.proration * 100}%
                         </div>
                     </div>

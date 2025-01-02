@@ -1,10 +1,12 @@
 <script lang="ts">
+    import type { PageData } from "./$types";
     import { _ } from "svelte-i18n";
     import Icon from "@/common/components/Icon.svelte";
     import type { Move, ComboSnapshot, ComboResult } from "@/moveTypes";
     import SelectMoveModal from "./SelectMoveModal.svelte";
-    import { moveset } from "@/data/moveset";
-    
+
+    let { data }: { data: PageData } = $props();
+    const moveset = data.moveset;
     let moves: Move[] = $state([]);
     let result: ComboResult = $derived(resolveCombo(moves));
     let isSelectModalOpen: boolean = $state(false);
@@ -74,7 +76,7 @@
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
                 <td>{Math.trunc(snap.finalDamage)}</td>
-                <td><button onclick={() => moves.splice(i, 1)}><Icon src="./icons/close.svg"></Icon></button></td>
+                <td><button onclick={() => moves.splice(i, 1)}><Icon src="/icons/close.svg"></Icon></button></td>
             </tr>
         {/each}
     </tbody>
