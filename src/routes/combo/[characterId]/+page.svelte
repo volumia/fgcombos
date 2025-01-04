@@ -10,6 +10,9 @@
     let moves: Move[] = $state([]);
     let result: ComboResult = $derived(resolveCombo(moves));
     let isSelectModalOpen: boolean = $state(false);
+    let isEditingName = $state(false);
+    let comboName = $state("Combo name");
+    let editedName = $state(comboName);
 
     function resolveCombo(moves: Move[]): ComboResult {
         let result: ComboResult = {
@@ -45,27 +48,83 @@
         isSelectModalOpen = false;
     }
 
+    function beginNameChange() {
+        isEditingName = true;
+        editedName = comboName;
+    }
+    
+    function commitNameChange() {
+        isEditingName = false;
+        comboName = editedName;
+    }
+
+    function commitNameChangeForm(e?: SubmitEvent) {
+        if (e) {
+            e.preventDefault();
+        }
+
+        commitNameChange();
+    }
+
+    function cancelNameChange() {
+        isEditingName = false;
+    }
+
     function handleKeyDown(e: KeyboardEvent) {
-        if (e.code === "KeyA" && !isSelectModalOpen) {
+        const isDocumentFocusedOnElement = document.activeElement && document.activeElement.nodeName !== "BODY";
+        if (!isDocumentFocusedOnElement && e.code === "KeyA" && !isSelectModalOpen) {
             isSelectModalOpen = true;
             e.preventDefault();
         }
+    }
+
+    function focusElement(el: HTMLElement) {
+        el.focus();
     }
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
 
-<h1>{$_(`characters.${moveset.characterId}.name`)}</h1>
+<section class="summary-area">
+    <img class="portrait" src={`/portraits/${moveset.characterId}.png`} alt="Portrait of character" />
+    <div class="metadata">
+        {#if isEditingName}
+            <form class="searchForm" onsubmit={commitNameChangeForm}>
+                <input
+                    type="search"
+                    id="editName"
+                    name="editName"
+                    autocomplete="off"
+                    use:focusElement
+                    bind:value={editedName}
+                />
+                <input type="submit" hidden />
+            </form>
+            <button onclick={commitNameChange}>{$_("common.confirm")}</button>
+            <button onclick={cancelNameChange}>{$_("common.cancel")}</button>
+        {:else}
+            <h1 class="title">
+                {comboName}
+                <button class="icon-button" onclick={beginNameChange}><Icon src="/icons/pencil.svg"></Icon></button>
+            </h1>
+        {/if}
+        <h2 class="totalDamage">{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</h2>
+        <div>
+            <span class="emblem">3rd &bull;</span>
+            <span class="char-name">{$_(`characters.${moveset.characterId}.name`)}</span>
+        </div>
+    </div>
+</section>
 
 <table>
     <thead>
         <tr>
-            <th>{$_("edit.colHead.move")}</th>
-            <th>{$_("edit.colHead.baseDamage")}</th>
-            <th>{$_("edit.colHead.multiplier")}</th>
-            <th>{$_("edit.colHead.proration")}</th>
-            <th>{$_("edit.colHead.finalDamage")}</th>
-            <th class="deleteButtonsColumn"></th>
+            <th class="col-move">{$_("edit.colHead.move")}</th>
+            <th class="col-baseDamage">{$_("edit.colHead.baseDamage")}</th>
+            <th class="col-multiplier">{$_("edit.colHead.multiplier")}</th>
+            <th class="col-proration">{$_("edit.colHead.proration")}</th>
+            <th class="col-finalDamage">{$_("edit.colHead.finalDamage")}</th>
+            <th class="col-delete"></th>
         </tr>
     </thead>
     <tbody>
@@ -93,12 +152,63 @@
     <button onclick={openAddModal}>+ {$_("edit.addMove")}</button>
 {/if}
 
-<div>{$_("edit.totalDamage")} {Math.trunc(result.totalDamage)}</div>
+<div>{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</div>
 
 <style lang="scss">
     @use "@/style/variables" as *;
+
+    .flex-horizontal {
+        display: flex;
+        flex-direction: row;
+        gap: 1ch;
+    }
+
+    .icon-button {
+        display: inline-flex;
+        font-size: 1rem;
+        width: 2em;
+        height: 2em;
+    }
+
+    .summary-area {
+        display: flex;
+        flex-direction: row;
+
+        width: 100%;
+        margin: $spacing-8 0;
+        
+        .portrait {
+            display: block;
+            height: 25em;
+            aspect-ratio: 1/1.5;
+            object-fit: cover;
+        }
+        
+        .metadata {
+            width: auto;
+            font-size: 1.5em;
+
+            h1.title {
+                font-size: 2em;
+                vertical-align: middle;
+            }
+
+            h2.totalDamage {
+                font-size: 1.25em;
+            }
+
+            .emblem {
+
+            }
+
+            .char-name {
+
+            }
+        }
+    }
     
     table {
+        width: 100%;
         border-collapse: collapse;
         
         button {
@@ -117,7 +227,27 @@
         padding: $spacing-2;
     }
 
-    .deleteButtonsColumn {
-        width: 5ch;
+    .col-move {
+        width: 30%;
+    }
+
+    .col-baseDamage {
+        width: 15%;
+    }
+
+    .col-multiplier {
+        width: 15%;
+    }
+
+    .col-proration {
+        width: 15%;
+    }
+
+    .col-finalDamage {
+        width: 20%;
+    }
+
+    .col-delete {
+        width: 5%;
     }
 </style>

@@ -1,5 +1,6 @@
 {
   "common": {
+    "confirm": "Confirm",
     "cancel": "Cancel"
   },
   "characters": {
@@ -9,7 +10,7 @@
     }
   },
   "edit": {
-    "searchPlaceholder": "Search items",
+    "searchPlaceholder": "Search moves",
     "addMove": "Add Move",
     "colHead": {
       "move": "Move",
@@ -18,6 +19,6 @@
       "proration": "Proration",
       "finalDamage": "Final damage"
     },
-    "totalDamage": "Total damage:"
+    "totalDamage": "Total damage: {dmg}"
   }
 }
