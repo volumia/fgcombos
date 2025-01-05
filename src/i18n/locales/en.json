@@ -19,6 +19,10 @@
       "proration": "Proration",
       "finalDamage": "Final damage"
     },
-    "totalDamage": "Total damage: {dmg}"
+    "totalDamage": "Total damage: {dmg}",
+    "moveTypes": {
+      "normal": "Normals",
+      "super": "Super Art"
+    }
   }
 }

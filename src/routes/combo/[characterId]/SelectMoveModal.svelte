@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { SvelteMap } from "svelte/reactivity";
     import { _ } from "svelte-i18n";
     import Fuse from "fuse.js";
     import type { Move } from "@/moveTypes";
@@ -20,6 +21,7 @@
     let selectedMoveIndex = $state(0);
     let isSearchEmpty = $derived(searchQuery.trim() === "");
     let moveListElement: Element | undefined = $state(undefined);
+    let headers = $state(new SvelteMap<string, string|undefined>());
 
     function getFilteredMoves(query: string): Move[] {
         if (isSearchEmpty) {
@@ -62,16 +64,25 @@
         el.focus();
     }
 
-    // Select the first move in the list whenever the filtered move list changes.
     $effect(() => {
-        filteredMoves; // Re-run this effect when selectableMoves updates
-        selectedMoveIndex = 0;
+        filteredMoves; // Re-run this effect when filteredMoves updates
+        selectedMoveIndex = 0; // Select the first move in the list.
+        
+        headers.clear();
+        const alreadyFound: string[] = [];
+        filteredMoves.forEach(move => {
+            if (!alreadyFound.includes(move.category)) {
+                headers.set(move.notation, move.category);
+                alreadyFound.push(move.category);
+            }
+        });
     });
 
     // Scroll the selected (not the same as page focus) move into view when navigating with arrow keys.
     $effect(() => {
         if (moveListElement) {
-            const moveEl = moveListElement.children[selectedMoveIndex];
+            const moveEls = moveListElement.querySelectorAll(".move");
+            const moveEl = moveEls[selectedMoveIndex];
             if (moveEl) {
                 moveEl.scrollIntoView({block: "nearest"});
             }
@@ -94,10 +105,13 @@
                 />
                 <input type="submit" hidden />
             </form>
-            <button class="cancel" onclick={onCancel}><Icon src="/icons/close.svg"></Icon></button>
+            <button class="cancel" onclick={onCancel}><Icon src="/icons/close.svg" /></button>
         </div>
         <div class="move-list" bind:this={moveListElement}>
-            {#each filteredMoves as move, i}
+            {#each filteredMoves as move, i (move.notation)}
+                {#if headers.has(move.notation)}
+                    <h3>{$_(`edit.moveTypes.${headers.get(move.notation) as string}`)}</h3>
+                {/if}
                 <button
                     class={i == selectedMoveIndex ? "move selected" : "move"}
                     onclick={() => onConfirm(move)}
@@ -107,11 +121,11 @@
                         <div class="name">{move.name}</div>
                         <div class="filler"></div>
                         <div class="damage">
-                            <Icon src={"/icons/fist.svg"}></Icon>
+                            <Icon src={"/icons/fist.svg"} />
                             {move.baseDamage}
                         </div>
                         <div class="proration">
-                            <Icon src={"/icons/trend-down.svg"}></Icon>
+                            <Icon src={"/icons/trend-down.svg"} />
                             {move.proration * 100}%
                         </div>
                     </div>
@@ -131,6 +145,7 @@
     }
     
     .modal {
+        position: absolute;
         max-width: 400px;
         padding: $spacing-1;
 

@@ -3,6 +3,7 @@ export type Move = Readonly<{
     notation: string;
     baseDamage: number;
     proration: number;
+    category: string;
 }>;
 
 export type Moveset = Readonly<{

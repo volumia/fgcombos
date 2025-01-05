@@ -110,8 +110,8 @@
         {/if}
         <h2 class="totalDamage">{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</h2>
         <div>
-            <span class="emblem">3rd &bull;</span>
-            <span class="char-name">{$_(`characters.${moveset.characterId}.name`)}</span>
+            <span class="char-name">{$_(`characters.${moveset.characterId}.name`)} &bull;</span>
+            <span class="emblem">3rd</span>
         </div>
     </div>
 </section>
@@ -141,6 +141,8 @@
     </tbody>
 </table>
 
+<div class="table-totalDamage">{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</div>
+
 {#if isSelectModalOpen}
     <SelectMoveModal
         moveList={moveset.moves}
@@ -152,16 +154,9 @@
     <button onclick={openAddModal}>+ {$_("edit.addMove")}</button>
 {/if}
 
-<div>{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</div>
 
 <style lang="scss">
     @use "@/style/variables" as *;
-
-    .flex-horizontal {
-        display: flex;
-        flex-direction: row;
-        gap: 1ch;
-    }
 
     .icon-button {
         display: inline-flex;
@@ -195,14 +190,6 @@
 
             h2.totalDamage {
                 font-size: 1.25em;
-            }
-
-            .emblem {
-
-            }
-
-            .char-name {
-
             }
         }
     }
@@ -249,5 +236,11 @@
 
     .col-delete {
         width: 5%;
+    }
+
+    .table-totalDamage {
+        width: fit-content;
+        margin-inline-start: auto;
+        margin-inline-end: 0;
     }
 </style>

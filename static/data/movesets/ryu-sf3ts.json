@@ -5,61 +5,71 @@
             "name": "Light Punch",
             "notation": "5LP",
             "baseDamage": 50,
-            "proration": 0.9
+            "proration": 0.9,
+            "category": "normal"
         },
         {
             "name": "Medium Punch",
             "notation": "5MP",
             "baseDamage": 70,
-            "proration": 0.8
+            "proration": 0.8,
+            "category": "normal"
         },
         {
             "name": "Heavy Punch",
             "notation": "5HP",
             "baseDamage": 110,
-            "proration": 0.6
+            "proration": 0.6,
+            "category": "normal"
         },
         {
             "name": "Crouching Light Punch",
             "notation": "2LP",
             "baseDamage": 50,
-            "proration": 0.9
+            "proration": 0.9,
+            "category": "normal"
         },
         {
             "name": "Crouching Medium Punch",
             "notation": "2MP",
             "baseDamage": 70,
-            "proration": 0.8
+            "proration": 0.8,
+            "category": "normal"
         },
         {
             "name": "Crouching Heavy Punch",
             "notation": "2HP",
             "baseDamage": 110,
-            "proration": 0.6
+            "proration": 0.6,
+            "category": "normal"
         },
         {
             "name": "Light Kick",
             "notation": "5LK",
             "baseDamage": 50,
-            "proration": 0.9
+            "proration": 0.9,
+            "category": "normal"
         },
         {
             "name": "Medium Kick",
             "notation": "5MK",
             "baseDamage": 70,
-            "proration": 0.8
+            "proration": 0.8,
+            "category": "normal"
         },
         {
             "name": "Heavy Kick",
             "notation": "5HK",
             "baseDamage": 110,
-            "proration": 0.6
+            "proration": 0.6,
+            "category": "normal"
         },
         {
             "name": "Shin Shoryuken",
             "notation": "236236P (SA2)",
             "baseDamage": 940,
-            "proration": 0.2
+            "proration": 0.2,
+            "category": "super"
         }
     ]
 }
