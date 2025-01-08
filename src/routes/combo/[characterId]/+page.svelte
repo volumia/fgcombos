@@ -4,7 +4,7 @@
     import Icon from "@/common/components/Icon.svelte";
     import type { Move, ComboSnapshot, ComboResult } from "@/moveTypes";
     import SelectMoveModal from "./SelectMoveModal.svelte";
-
+    
     let { data }: { data: PageData } = $props();
     const moveset = data.moveset;
     let moves: Move[] = $state([]);
@@ -116,7 +116,7 @@
     </div>
 </section>
 
-<table>
+<table data-testid="move-table">
     <thead>
         <tr>
             <th class="col-move">{$_("edit.colHead.move")}</th>
@@ -129,7 +129,7 @@
     </thead>
     <tbody>
         {#each result.snapshots as snap, i}
-            <tr>
+            <tr data-testid="move-row">
                 <td>{snap.name}</td>
                 <td>{snap.baseDamage}</td>
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
