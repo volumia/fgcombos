@@ -115,6 +115,7 @@
                 <button
                     class={i == selectedMoveIndex ? "move selected" : "move"}
                     onclick={() => onConfirm(move)}
+                    data-testid="add-move"
                 >
                     <div class="line">
                         <div>{move.notation}</div>

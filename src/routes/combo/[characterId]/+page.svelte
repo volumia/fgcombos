@@ -151,7 +151,7 @@
     >
     </SelectMoveModal>
 {:else}
-    <button onclick={openAddModal}>+ {$_("edit.addMove")}</button>
+    <button onclick={openAddModal} data-testid="open-add-modal">+ {$_("edit.addMove")}</button>
 {/if}
 
 

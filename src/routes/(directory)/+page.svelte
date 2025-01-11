@@ -1,37 +1,89 @@
 <script lang="ts">
-    import CharacterCard from "./CharacterCard.svelte";
+    import { _ } from "svelte-i18n";
+    import { goto } from "$app/navigation";
+    import Dropdown from "@/lib/components/Dropdown.svelte";
+    import rawGamesData from "@/data/games.json";
+
+    type CharacterData = {
+        id: string;
+    };
+
+    type GameData = {
+        title: string;
+        characters: CharacterData[];
+    };
+
+    type GamesDataType = {
+        games: GameData[];
+    };
+
+    let gamesData = rawGamesData as GamesDataType;
+
+    let selectedGame: GameData | undefined = $state();
+    let selectedCharacter: CharacterData | undefined = $state();
+
+    let gameOptions: { value: GameData; text: string }[] = gamesData.games.map((g) => {
+        return { value: g, text: g.title };
+    });
+
+    let characterOptions: { value: CharacterData; text: string }[] = $derived(
+        selectedGame != undefined
+            ? selectedGame.characters.map((c) => ({ value: c, text: `characters.${c.id}.name` }))
+            : []
+    );
+
+    let canCreateCombo: boolean = $derived(
+        selectedGame != undefined && selectedCharacter != undefined
+    );
+
+    function goToEditPage() {
+        if (selectedCharacter) {
+            goto(`/combo/${selectedCharacter?.id}`);
+        }
+    }
 </script>
 
-<p class="center-horizontally">Choose a character</p>
-<p class="center-horizontally">↓</p>
-<h1>Street Fighter III - 3rd Strike</h1>
-<div class="card-grid">
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
-    <CharacterCard characterId="ryu-sf3ts"></CharacterCard>
+<div class="division">
+    <section class="create-form">
+        <h2>{$_("home.createSection.title")}</h2>
+
+        <label for="select-game">{$_("home.createSection.selectGameLabel")}</label>
+        <Dropdown
+            options={gameOptions}
+            bind:value={selectedGame}
+            placeholder={$_("home.createSection.selectGamePlaceholder")}
+        ></Dropdown>
+
+        <label for="select-character">{$_("home.createSection.selectCharacterLabel")}</label>
+        <Dropdown
+            options={characterOptions}
+            bind:value={selectedCharacter}
+            disabled={characterOptions.length === 0}
+            placeholder={$_("home.createSection.selectCharacterPlaceholder")}
+        ></Dropdown>
+
+        <button onclick={goToEditPage} disabled={!canCreateCombo}>{$_("common.create")}</button>
+    </section>
+    <section class="browse">
+        <h2>{$_("home.browseSection.title")}</h2>
+    </section>
 </div>
 
 <style lang="scss">
-    .card-grid {
+    .division {
         display: flex;
-        width: 100%;
-
         flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: start;
-        gap: 16px;
     }
 
-    .center-horizontally {
-        width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
+    .browse {
+        width: 45%;
+        height: 100%;
+        border: 1px solid black;
+    }
+
+    .create-form {
+        width: 55%;
+        height: 100%;
+        border: 1px solid black;
     }
 </style>

@@ -1,0 +1,12 @@
+{
+    "games": [
+        {
+            "title": "Street Fighter III - Third Strike",
+            "characters": [
+                {
+                    "id": "ryu-sf3ts"
+                }
+            ]
+        }
+    ]
+}

@@ -1,12 +1,19 @@
 {
   "common": {
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create": "Create"
   },
-  "characters": {
-    "ryu-sf3ts": {
-      "name": "Ryu",
-      "moves": {}
+  "home": {
+    "createSection": {
+      "title": "Create a combo",
+      "selectGameLabel": "Select a game",
+      "selectGamePlaceholder": "No game selected",
+      "selectCharacterLabel": "Select a character",
+      "selectCharacterPlaceholder": "No character selected"
+    },
+    "browseSection": {
+      "title": "Browse combos"
     }
   },
   "edit": {
@@ -23,6 +30,12 @@
     "moveTypes": {
       "normal": "Normals",
       "super": "Super Art"
+    }
+  },
+  "characters": {
+    "ryu-sf3ts": {
+      "name": "Ryu",
+      "moves": {}
     }
   }
 }
