@@ -111,18 +111,24 @@
 </div>
 
 <style lang="scss">
-    .division {
-        display: flex;
-        flex-direction: row;
-    }
+    @use "@/style/mixins" as *;
 
-    .browse {
-        width: 45%;
-        height: 100%;
+    .division {
+        display: grid;
+        grid-template: "a b" auto / 0.55fr 0.45fr;
+
+        @include for-size(phone, down) {
+            grid-template: 
+                "a" auto
+                "b" auto / 1fr;
+        }
     }
 
     .create-form {
-        width: 55%;
-        height: 100%;
+        grid-area: a;
+    }
+
+    .browse {
+        grid-area: b;
     }
 </style>
