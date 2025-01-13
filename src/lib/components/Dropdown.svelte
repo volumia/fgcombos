@@ -1,5 +1,4 @@
 <script lang="ts" generics="DropdownValue">
-    import { onMount } from "svelte";
     import { _ } from "svelte-i18n";
     import clsx from "clsx";
 

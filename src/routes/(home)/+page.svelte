@@ -3,6 +3,7 @@
     import { goto } from "$app/navigation";
     import Dropdown from "@/lib/components/Dropdown.svelte";
     import rawGamesData from "@/data/games.json";
+    import ComboCard from "./ComboCard.svelte";
 
     type CharacterData = {
         id: string;
@@ -66,6 +67,46 @@
     </section>
     <section class="browse">
         <h2>{$_("home.browseSection.title")}</h2>
+        <ComboCard
+            title="Easy bread n butter bread n butter"
+            totalDamage={451}
+            gameId="sf3ts"
+            characterId="ryu-sf3ts"
+            likes={98}
+            userName="Gyro"
+        ></ComboCard>
+        <ComboCard
+            title="Easy bread n butter"
+            totalDamage={451}
+            gameId="sf3ts"
+            characterId="ryu-sf3ts"
+            likes={98}
+            userName="Gyro"
+        ></ComboCard>
+        <ComboCard
+            title="Easy bread n butter"
+            totalDamage={451}
+            gameId="sf3ts"
+            characterId="ryu-sf3ts"
+            likes={98}
+            userName="Gyro"
+        ></ComboCard>
+        <ComboCard
+            title="Easy bread n butter"
+            totalDamage={451}
+            gameId="sf3ts"
+            characterId="ryu-sf3ts"
+            likes={98}
+            userName="Gyro"
+        ></ComboCard>
+        <ComboCard
+            title="Easy bread n butter"
+            totalDamage={451}
+            gameId="sf3ts"
+            characterId="ryu-sf3ts"
+            likes={98}
+            userName="Gyro"
+        ></ComboCard>
     </section>
 </div>
 
@@ -78,12 +119,10 @@
     .browse {
         width: 45%;
         height: 100%;
-        border: 1px solid black;
     }
 
     .create-form {
         width: 55%;
         height: 100%;
-        border: 1px solid black;
     }
 </style>

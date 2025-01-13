@@ -2,7 +2,10 @@
   "common": {
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "create": "Create"
+    "create": "Create",
+    "byUser": "by {name}",
+    "likes": "{likes} likes",
+    "damageNumber": "{dmg} DMG"
   },
   "home": {
     "createSection": {
@@ -30,6 +33,12 @@
     "moveTypes": {
       "normal": "Normals",
       "super": "Super Art"
+    }
+  },
+  "games": {
+    "sf3ts": {
+      "name": "Street Fighter 3 - Third Strike",
+      "abbrev": "SF3TS"
     }
   },
   "characters": {
