@@ -1,6 +1,8 @@
 /* Element First Media Queries
 ========================================================= */
 
+@use "sass:map";
+
 // A map of breakpoints.
 $breakpoints: (
     phone-sm: 420px,
@@ -13,9 +15,9 @@ $breakpoints: (
 
 @mixin for-size($breakpoint, $direction: down) {
     // If the breakpoint exists in the map.
-    @if map-has-key($breakpoints, $breakpoint) {
+    @if map.has-key($breakpoints, $breakpoint) {
         // Get the breakpoint value.
-        $breakpoint-value: map-get($breakpoints, $breakpoint);
+        $breakpoint-value: map.get($breakpoints, $breakpoint);
 
         // Determine the direction and then write the media query.
         @if $direction == up {

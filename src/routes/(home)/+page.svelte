@@ -4,6 +4,7 @@
     import Dropdown from "@/lib/components/Dropdown.svelte";
     import rawGamesData from "@/data/games.json";
     import ComboCard from "./ComboCard.svelte";
+    import type { PageData } from "./$types";
 
     type CharacterData = {
         id: string;
@@ -18,6 +19,9 @@
         games: GameData[];
     };
 
+    let { data }: { data: PageData } = $props();
+    console.log(data.combos);
+    
     let gamesData = rawGamesData as GamesDataType;
 
     let selectedGame: GameData | undefined = $state();
@@ -67,46 +71,16 @@
     </section>
     <section class="browse">
         <h2>{$_("home.browseSection.title")}</h2>
-        <ComboCard
-            title="Easy bread n butter bread n butter"
-            totalDamage={451}
-            gameId="sf3ts"
-            characterId="ryu-sf3ts"
-            likes={98}
-            userName="Gyro"
-        ></ComboCard>
-        <ComboCard
-            title="Easy bread n butter"
-            totalDamage={451}
-            gameId="sf3ts"
-            characterId="ryu-sf3ts"
-            likes={98}
-            userName="Gyro"
-        ></ComboCard>
-        <ComboCard
-            title="Easy bread n butter"
-            totalDamage={451}
-            gameId="sf3ts"
-            characterId="ryu-sf3ts"
-            likes={98}
-            userName="Gyro"
-        ></ComboCard>
-        <ComboCard
-            title="Easy bread n butter"
-            totalDamage={451}
-            gameId="sf3ts"
-            characterId="ryu-sf3ts"
-            likes={98}
-            userName="Gyro"
-        ></ComboCard>
-        <ComboCard
-            title="Easy bread n butter"
-            totalDamage={451}
-            gameId="sf3ts"
-            characterId="ryu-sf3ts"
-            likes={98}
-            userName="Gyro"
-        ></ComboCard>
+        {#each data.combos as combo}
+            <ComboCard
+                title={combo.title}
+                totalDamage={combo.damage}
+                gameId={combo.game_name ?? ""}
+                characterId={combo.character_name ?? ""}
+                likes={combo.likeCount}
+                userName="Gyro"
+            ></ComboCard>
+        {/each}
     </section>
 </div>
 
@@ -115,7 +89,7 @@
 
     .division {
         display: grid;
-        grid-template: "a b" auto / 0.55fr 0.45fr;
+        grid-template: "a b" auto / 0.3fr 0.7fr;
 
         @include for-size(phone, down) {
             grid-template: 
