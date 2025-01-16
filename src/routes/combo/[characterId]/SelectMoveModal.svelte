@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { SvelteMap } from "svelte/reactivity";
-    import { _ } from "svelte-i18n";
-    import Fuse from "fuse.js";
-    import type { Move } from "@/moveTypes";
-    import Icon from "@/common/components/Icon.svelte";
+    import { SvelteMap } from 'svelte/reactivity';
+    import { _ } from 'svelte-i18n';
+    import Fuse from 'fuse.js';
+    import type { Move } from '@/moveTypes';
+    import Icon from '@/common/components/Icon.svelte';
 
     type Props = {
         moveList: Move[];
@@ -12,16 +12,16 @@
     };
     let { moveList, onConfirm, onCancel }: Props = $props();
 
-    let searchQuery: string = $state("");
+    let searchQuery: string = $state('');
     const fuse = new Fuse(moveList, {
         threshold: 0.2,
-        keys: ["name", "notation"]
+        keys: ['name', 'notation']
     });
     let filteredMoves: Move[] = $derived(getFilteredMoves(searchQuery));
     let selectedMoveIndex = $state(0);
-    let isSearchEmpty = $derived(searchQuery.trim() === "");
+    let isSearchEmpty = $derived(searchQuery.trim() === '');
     let moveListElement: Element | undefined = $state(undefined);
-    let headers = $state(new SvelteMap<string, string|undefined>());
+    let headers = $state(new SvelteMap<string, string | undefined>());
 
     function getFilteredMoves(query: string): Move[] {
         if (isSearchEmpty) {
@@ -41,15 +41,15 @@
     }
 
     function onModalKeyPress(e: KeyboardEvent) {
-        if (e.code === "ArrowUp") {
+        if (e.code === 'ArrowUp') {
             selectedMoveIndex--;
             e.preventDefault();
         }
-        if (e.code === "ArrowDown") {
+        if (e.code === 'ArrowDown') {
             selectedMoveIndex++;
             e.preventDefault();
         }
-        if (e.code === "Escape") {
+        if (e.code === 'Escape') {
             onCancel();
         }
         if (selectedMoveIndex >= filteredMoves.length) {
@@ -67,10 +67,10 @@
     $effect(() => {
         filteredMoves; // Re-run this effect when filteredMoves updates
         selectedMoveIndex = 0; // Select the first move in the list.
-        
+
         headers.clear();
         const alreadyFound: string[] = [];
-        filteredMoves.forEach(move => {
+        filteredMoves.forEach((move) => {
             if (!alreadyFound.includes(move.category)) {
                 headers.set(move.notation, move.category);
                 alreadyFound.push(move.category);
@@ -81,10 +81,10 @@
     // Scroll the selected (not the same as page focus) move into view when navigating with arrow keys.
     $effect(() => {
         if (moveListElement) {
-            const moveEls = moveListElement.querySelectorAll(".move");
+            const moveEls = moveListElement.querySelectorAll('.move');
             const moveEl = moveEls[selectedMoveIndex];
             if (moveEl) {
-                moveEl.scrollIntoView({block: "nearest"});
+                moveEl.scrollIntoView({ block: 'nearest' });
             }
         }
     });
@@ -98,7 +98,7 @@
                     type="search"
                     id="search"
                     name="search"
-                    placeholder={$_("edit.searchPlaceholder")}
+                    placeholder={$_('edit.searchPlaceholder')}
                     autocomplete="off"
                     use:focusElement
                     bind:value={searchQuery}
@@ -113,7 +113,7 @@
                     <h3>{$_(`edit.moveTypes.${headers.get(move.notation) as string}`)}</h3>
                 {/if}
                 <button
-                    class={i == selectedMoveIndex ? "move selected" : "move"}
+                    class={i == selectedMoveIndex ? 'move selected' : 'move'}
                     onclick={() => onConfirm(move)}
                     data-testid="add-move"
                 >
@@ -122,11 +122,11 @@
                         <div class="name">{move.name}</div>
                         <div class="filler"></div>
                         <div class="damage">
-                            <Icon src={"/icons/fist.svg"} />
+                            <Icon src={'/icons/fist.svg'} />
                             {move.baseDamage}
                         </div>
                         <div class="proration">
-                            <Icon src={"/icons/trend-down.svg"} />
+                            <Icon src={'/icons/trend-down.svg'} />
                             {move.proration * 100}%
                         </div>
                     </div>
@@ -137,14 +137,14 @@
 </div>
 
 <style lang="scss">
-    @use "@/style/variables" as *;
+    @use '@/style/variables' as *;
 
     button {
         margin: $spacing-1 0;
         padding: $spacing-1;
         font-size: 1em;
     }
-    
+
     .modal {
         position: absolute;
         max-width: 400px;

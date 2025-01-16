@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import { goto } from "$app/navigation";
-    import Dropdown from "@/lib/components/Dropdown.svelte";
-    import rawGamesData from "@/data/games.json";
-    import ComboCard from "./ComboCard.svelte";
-    import type { PageData } from "./$types";
+    import { _ } from 'svelte-i18n';
+    import { goto } from '$app/navigation';
+    import Dropdown from '@/lib/components/Dropdown.svelte';
+    import rawGamesData from '@/data/games.json';
+    import ComboCard from './ComboCard.svelte';
+    import type { PageData } from './$types';
 
     type CharacterData = {
         id: string;
@@ -21,7 +21,7 @@
 
     let { data }: { data: PageData } = $props();
     console.log(data.combos);
-    
+
     let gamesData = rawGamesData as GamesDataType;
 
     let selectedGame: GameData | undefined = $state();
@@ -50,33 +50,33 @@
 
 <div class="division">
     <section class="create-form">
-        <h2>{$_("home.createSection.title")}</h2>
+        <h2>{$_('home.createSection.title')}</h2>
 
-        <label for="select-game">{$_("home.createSection.selectGameLabel")}</label>
+        <label for="select-game">{$_('home.createSection.selectGameLabel')}</label>
         <Dropdown
             options={gameOptions}
             bind:value={selectedGame}
-            placeholder={$_("home.createSection.selectGamePlaceholder")}
+            placeholder={$_('home.createSection.selectGamePlaceholder')}
         ></Dropdown>
 
-        <label for="select-character">{$_("home.createSection.selectCharacterLabel")}</label>
+        <label for="select-character">{$_('home.createSection.selectCharacterLabel')}</label>
         <Dropdown
             options={characterOptions}
             bind:value={selectedCharacter}
             disabled={characterOptions.length === 0}
-            placeholder={$_("home.createSection.selectCharacterPlaceholder")}
+            placeholder={$_('home.createSection.selectCharacterPlaceholder')}
         ></Dropdown>
 
-        <button onclick={goToEditPage} disabled={!canCreateCombo}>{$_("common.create")}</button>
+        <button onclick={goToEditPage} disabled={!canCreateCombo}>{$_('common.create')}</button>
     </section>
     <section class="browse">
-        <h2>{$_("home.browseSection.title")}</h2>
+        <h2>{$_('home.browseSection.title')}</h2>
         {#each data.combos as combo}
             <ComboCard
                 title={combo.title}
                 totalDamage={combo.damage}
-                gameId={combo.game_name ?? ""}
-                characterId={combo.character_name ?? ""}
+                gameId={combo.game_name ?? ''}
+                characterId={combo.character_name ?? ''}
                 likes={combo.likeCount}
                 userName="Gyro"
             ></ComboCard>
@@ -85,16 +85,16 @@
 </div>
 
 <style lang="scss">
-    @use "@/style/mixins" as *;
+    @use '@/style/mixins' as *;
 
     .division {
         display: grid;
-        grid-template: "a b" auto / 0.3fr 0.7fr;
+        grid-template: 'a b' auto / 0.3fr 0.7fr;
 
         @include for-size(phone, down) {
-            grid-template: 
-                "a" auto
-                "b" auto / 1fr;
+            grid-template:
+                'a' auto
+                'b' auto / 1fr;
         }
     }
 

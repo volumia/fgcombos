@@ -1,30 +1,30 @@
 <script lang="ts">
-    import type { PageData } from "./$types";
-    import { _ } from "svelte-i18n";
-    import Icon from "@/common/components/Icon.svelte";
-    import type { Move, ComboSnapshot, ComboResult } from "@/moveTypes";
-    import SelectMoveModal from "./SelectMoveModal.svelte";
-    
+    import type { PageData } from './$types';
+    import { _ } from 'svelte-i18n';
+    import Icon from '@/common/components/Icon.svelte';
+    import type { Move, ComboSnapshot, ComboResult } from '@/moveTypes';
+    import SelectMoveModal from './SelectMoveModal.svelte';
+
     let { data }: { data: PageData } = $props();
     const moveset = data.moveset;
     let moves: Move[] = $state([]);
     let result: ComboResult = $derived(resolveCombo(moves));
     let isSelectModalOpen: boolean = $state(false);
     let isEditingName = $state(false);
-    let comboName = $state("Combo name");
+    let comboName = $state('Combo name');
     let editedName = $state(comboName);
 
     function resolveCombo(moves: Move[]): ComboResult {
         let result: ComboResult = {
             snapshots: [],
-            totalDamage: 0,
+            totalDamage: 0
         };
         let multiplier = 1;
-        
-        moves.forEach(move => {
+
+        moves.forEach((move) => {
             let damage = move.baseDamage * multiplier;
             result.totalDamage += damage;
-            
+
             result.snapshots.push({
                 name: move.notation,
                 baseDamage: move.baseDamage,
@@ -52,7 +52,7 @@
         isEditingName = true;
         editedName = comboName;
     }
-    
+
     function commitNameChange() {
         isEditingName = false;
         comboName = editedName;
@@ -71,8 +71,9 @@
     }
 
     function handleKeyDown(e: KeyboardEvent) {
-        const isDocumentFocusedOnElement = document.activeElement && document.activeElement.nodeName !== "BODY";
-        if (!isDocumentFocusedOnElement && e.code === "KeyA" && !isSelectModalOpen) {
+        const isDocumentFocusedOnElement =
+            document.activeElement && document.activeElement.nodeName !== 'BODY';
+        if (!isDocumentFocusedOnElement && e.code === 'KeyA' && !isSelectModalOpen) {
             isSelectModalOpen = true;
             e.preventDefault();
         }
@@ -86,7 +87,11 @@
 <svelte:window onkeydown={handleKeyDown} />
 
 <section class="summary-area">
-    <img class="portrait" src={`/portraits/${moveset.characterId}.png`} alt="Portrait of character" />
+    <img
+        class="portrait"
+        src={`/portraits/${moveset.characterId}.png`}
+        alt="Portrait of character"
+    />
     <div class="metadata">
         {#if isEditingName}
             <form class="searchForm" onsubmit={commitNameChangeForm}>
@@ -100,15 +105,19 @@
                 />
                 <input type="submit" hidden />
             </form>
-            <button onclick={commitNameChange}>{$_("common.confirm")}</button>
-            <button onclick={cancelNameChange}>{$_("common.cancel")}</button>
+            <button onclick={commitNameChange}>{$_('common.confirm')}</button>
+            <button onclick={cancelNameChange}>{$_('common.cancel')}</button>
         {:else}
             <h1 class="title">
                 {comboName}
-                <button class="icon-button" onclick={beginNameChange}><Icon src="/icons/pencil.svg"></Icon></button>
+                <button class="icon-button" onclick={beginNameChange}
+                    ><Icon src="/icons/pencil.svg"></Icon></button
+                >
             </h1>
         {/if}
-        <h2 class="totalDamage">{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</h2>
+        <h2 class="totalDamage">
+            {$_('edit.totalDamage', { values: { dmg: Math.trunc(result.totalDamage) } })}
+        </h2>
         <div>
             <span class="char-name">{$_(`characters.${moveset.characterId}.name`)} &bull;</span>
             <span class="emblem">3rd</span>
@@ -119,11 +128,11 @@
 <table data-testid="move-table">
     <thead>
         <tr>
-            <th class="col-move">{$_("edit.colHead.move")}</th>
-            <th class="col-baseDamage">{$_("edit.colHead.baseDamage")}</th>
-            <th class="col-multiplier">{$_("edit.colHead.multiplier")}</th>
-            <th class="col-proration">{$_("edit.colHead.proration")}</th>
-            <th class="col-finalDamage">{$_("edit.colHead.finalDamage")}</th>
+            <th class="col-move">{$_('edit.colHead.move')}</th>
+            <th class="col-baseDamage">{$_('edit.colHead.baseDamage')}</th>
+            <th class="col-multiplier">{$_('edit.colHead.multiplier')}</th>
+            <th class="col-proration">{$_('edit.colHead.proration')}</th>
+            <th class="col-finalDamage">{$_('edit.colHead.finalDamage')}</th>
             <th class="col-delete"></th>
         </tr>
     </thead>
@@ -135,28 +144,32 @@
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
                 <td>{Math.trunc(snap.finalDamage)}</td>
-                <td><button onclick={() => moves.splice(i, 1)}><Icon src="/icons/close.svg"></Icon></button></td>
+                <td
+                    ><button onclick={() => moves.splice(i, 1)}
+                        ><Icon src="/icons/close.svg"></Icon></button
+                    ></td
+                >
             </tr>
         {/each}
     </tbody>
 </table>
 
-<div class="table-totalDamage">{$_("edit.totalDamage", { values: { dmg: Math.trunc(result.totalDamage) } } )}</div>
+<div class="table-totalDamage">
+    {$_('edit.totalDamage', { values: { dmg: Math.trunc(result.totalDamage) } })}
+</div>
 
 {#if isSelectModalOpen}
     <SelectMoveModal
         moveList={moveset.moves}
         onConfirm={addMove}
-        onCancel={() => isSelectModalOpen = false}
-    >
-    </SelectMoveModal>
+        onCancel={() => (isSelectModalOpen = false)}
+    ></SelectMoveModal>
 {:else}
-    <button onclick={openAddModal} data-testid="open-add-modal">+ {$_("edit.addMove")}</button>
+    <button onclick={openAddModal} data-testid="open-add-modal">+ {$_('edit.addMove')}</button>
 {/if}
 
-
 <style lang="scss">
-    @use "@/style/variables" as *;
+    @use '@/style/variables' as *;
 
     .icon-button {
         display: inline-flex;
@@ -171,14 +184,14 @@
 
         width: 100%;
         margin: $spacing-8 0;
-        
+
         .portrait {
             display: block;
             height: 25em;
             aspect-ratio: 1/1.5;
             object-fit: cover;
         }
-        
+
         .metadata {
             width: auto;
             font-size: 1.5em;
@@ -193,11 +206,11 @@
             }
         }
     }
-    
+
     table {
         width: 100%;
         border-collapse: collapse;
-        
+
         button {
             margin-left: auto;
             margin-right: auto;
@@ -205,12 +218,15 @@
             width: 100%;
         }
     }
-    
-    table, th, td {
+
+    table,
+    th,
+    td {
         border: 1px solid black;
     }
 
-    th, td {
+    th,
+    td {
         padding: $spacing-2;
     }
 

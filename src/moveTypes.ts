@@ -7,8 +7,8 @@ export type Move = Readonly<{
 }>;
 
 export type Moveset = Readonly<{
-    characterId: string,
-    moves: Move[]
+    characterId: string;
+    moves: Move[];
 }>;
 
 export type ComboSnapshot = {

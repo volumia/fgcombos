@@ -1,6 +1,6 @@
 <script lang="ts" generics="DropdownValue">
-    import { _ } from "svelte-i18n";
-    import clsx from "clsx";
+    import { _ } from 'svelte-i18n';
+    import clsx from 'clsx';
 
     type DropdownOption = {
         value: DropdownValue;
@@ -36,12 +36,12 @@
 
 <div class="select-wrapper">
     <select
-        class={clsx(selectedValue == undefined && "placeholder")}
+        class={clsx(selectedValue == undefined && 'placeholder')}
         onchange={onChange}
         {disabled}
     >
         <option class="placeholder" value="" disabled selected={initialIndex == undefined} hidden
-            >{$_(placeholder || "")}
+            >{$_(placeholder || '')}
         </option>
 
         {#each options as option, i}
@@ -81,7 +81,7 @@
             cursor: inherit;
             line-height: inherit;
 
-            background: url("/icons/dropdown-arrow.svg") center right no-repeat;
+            background: url('/icons/dropdown-arrow.svg') center right no-repeat;
             border: 0;
             outline: none;
 
