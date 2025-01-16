@@ -5,8 +5,10 @@ import type { Database } from '@/lib/supabase/databaseTypes';
 
 type Combo = Database['public']['Tables']['combos']['Row'];
 
+const maxNumberOfCombos = 5;
+
 export async function load() {
-    const combosQuery = await supabase.from('combos').select();
+    const combosQuery = await supabase.from('combos').select().range(0, maxNumberOfCombos);
 
     const { data, error } = await combosQuery;
     if (error) {

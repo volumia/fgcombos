@@ -16,7 +16,8 @@
             "selectCharacterPlaceholder": "No character selected"
         },
         "browseSection": {
-            "title": "Browse combos"
+            "title": "Browse combos",
+            "totalDamage": "Total dmg"
         }
     },
     "edit": {

@@ -1,7 +1,9 @@
 <script lang="ts">
+    import { IconSrcType } from "./IconSrcType";
+    
     type Props = {
-        path?: string;
-        src?: string;
+        src: string;
+        srcType?: IconSrcType
         size?: number | string;
         color?: string;
         flip?: string;
@@ -13,8 +15,8 @@
     };
 
     let {
-        path = undefined,
-        src = undefined,
+        src,
+        srcType = IconSrcType.Svg,
         size = 1,
         color = undefined,
         flip = undefined,
@@ -27,23 +29,21 @@
 
     if (Number(size)) size = Number(size);
 
-    const fromFile = typeof src === 'string';
-    const width = $derived(typeof size === 'string' ? size : `${size * 1.5}em`);
+    const sizeValue = $derived(typeof size === 'string' ? size : `${size * 1.5}em`);
 
     const getStyles = () => {
         const transform = [];
         const styles = [];
 
-        styles.push(['width', width]);
-        styles.push(['height', width]);
+        styles.push(['width', sizeValue]);
+        styles.push(['height', sizeValue]);
 
-        if (fromFile) {
+        if (srcType === IconSrcType.Svg) {
             styles.push(['-webkit-mask', `url(${src}) no-repeat center`]);
             styles.push(['mask', `url(${src}) no-repeat center`]);
             styles.push(['background-color', color !== undefined ? color : 'currentColor']);
-            styles.push(['display', 'inline-block']);
-            styles.push(['vertical-align', 'middle']);
-        } else {
+        }
+        else if (srcType === IconSrcType.SvgPath) {
             styles.push(['fill', color !== undefined ? color : 'currentColor']);
         }
 
@@ -74,19 +74,26 @@
     let style: string = $derived(getStyles());
 </script>
 
-{#if src != undefined}
-    <div {style} class={className}></div>
-{:else}
+{#if srcType === IconSrcType.Svg}
+    <div {style} class={className} {title}></div>
+{:else if srcType === IconSrcType.SvgPath}
     <svg viewBox="0 0 24 24" {style} class={className}>
         {#if title != undefined}
             <title>{title}</title>
         {/if}
-        <path d={path} />
+        <path d={src} />
     </svg>
+{:else}
+    <img {style} class={className} src={src} {title} alt={title} />
 {/if}
 
 <style>
     svg {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    img {
         vertical-align: middle;
         display: inline-block;
     }
