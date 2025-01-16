@@ -47,8 +47,8 @@
             'm c c b' 0.4fr / 0.4fr 0.35fr 0.35fr 0.2fr;
 
         width: 100%;
-        height: 80px;
-        margin: $margin-2 0;
+        height: $size-10;
+        margin: $spacing-2 0;
 
         border: 1px solid black;
         color: white;

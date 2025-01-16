@@ -88,13 +88,10 @@
 {/if}
 
 <style>
-    svg {
-        display: inline-block;
-        vertical-align: middle;
-    }
-
+    div,
+    svg,
     img {
-        vertical-align: middle;
         display: inline-block;
+        vertical-align: middle;
     }
 </style>

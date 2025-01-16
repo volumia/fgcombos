@@ -183,7 +183,7 @@
         flex-direction: row;
 
         width: 100%;
-        margin: $spacing-8 0;
+        margin: $spacing-4 0;
 
         .portrait {
             display: block;
@@ -227,7 +227,7 @@
 
     th,
     td {
-        padding: $spacing-2;
+        padding: $spacing-1;
     }
 
     .col-move {
