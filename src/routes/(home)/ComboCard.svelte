@@ -71,6 +71,13 @@
         // Center child h3 vertically
         display: flex;
         align-items: center;
+
+        h3 {
+            width: 100%;
+            text-overflow: ellipsis;
+            overflow-x: hidden;
+            white-space: nowrap;
+        }
     }
 
     .area-damage {

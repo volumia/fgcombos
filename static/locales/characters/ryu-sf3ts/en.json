@@ -1,0 +1,49 @@
+{
+    "characters": {
+        "ryu-sf3ts": {
+            "name": "Ryu",
+            "moves": {
+                    "5lp": {
+                        "name": "Light Punch",
+                        "notation": "5LP"
+                    },
+                    "5mp": {
+                        "name": "Medium Punch",
+                        "notation": "5MP"
+                    },
+                    "5hp": {
+                        "name": "Heavy Punch",
+                        "notation": "5HP"
+                    },
+                    "2lp": {
+                        "name": "Crouching Light Punch",
+                        "notation": "2LP"
+                    },
+                    "2mp": {
+                        "name": "Crouching Medium Punch",
+                        "notation": "2MP"
+                    },
+                    "2hp": {
+                        "name": "Crouching Heavy Punch",
+                        "notation": "2HP"
+                    },
+                    "5lk": {
+                        "name": "Light Kick",
+                        "notation": "5LK"
+                    },
+                    "5mk": {
+                        "name": "Medium Kick",
+                        "notation": "5MK"
+                    },
+                    "5hk": {
+                        "name": "Heavy Kick",
+                        "notation": "5HK"
+                    },
+                    "236236p": {
+                        "name": "Shin Shoryuken",
+                        "notation": "236236P (SA2)"
+                    }
+                }
+            }
+    }
+}

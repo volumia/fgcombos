@@ -1,18 +1,39 @@
 <script lang="ts">
     import type { PageData } from './$types';
-    import { _ } from 'svelte-i18n';
+    import { _, locale, addMessages } from 'svelte-i18n';
     import Icon from '@/common/components/Icon.svelte';
     import type { Move, ComboSnapshot, ComboResult } from '@/moveTypes';
     import SelectMoveModal from './SelectMoveModal.svelte';
+    import GameEmblem from '@/common/components/GameEmblem.svelte';
 
     let { data }: { data: PageData } = $props();
     const moveset = data.moveset;
+    const cid = data.characterId;
+    if ($locale) {
+        addMessages($locale, data.localeMessages);
+    }
+
     let moves: Move[] = $state([]);
     let result: ComboResult = $derived(resolveCombo(moves));
     let isSelectModalOpen: boolean = $state(false);
     let isEditingName = $state(false);
     let comboName = $state('Combo name');
     let editedName = $state(comboName);
+    let namedMoves = $derived(moveset.moves.map(move => {
+        return {
+            move,
+            notation: getTranslatedMoveNotation(move.id),
+            name: getTranslatedMoveName(move.id),
+        }
+    }));
+
+    function getTranslatedMoveName(id: string) {
+        return $_(`characters.${cid}.moves.${id}.name`);
+    }
+
+    function getTranslatedMoveNotation(id: string) {
+        return $_(`characters.${cid}.moves.${id}.notation`);
+    }
 
     function resolveCombo(moves: Move[]): ComboResult {
         let result: ComboResult = {
@@ -26,7 +47,7 @@
             result.totalDamage += damage;
 
             result.snapshots.push({
-                name: move.notation,
+                id: move.id,
                 baseDamage: move.baseDamage,
                 proration: move.proration,
                 multiplier,
@@ -87,11 +108,7 @@
 <svelte:window onkeydown={handleKeyDown} />
 
 <section class="summary-area">
-    <img
-        class="portrait"
-        src={`/portraits/${moveset.characterId}.png`}
-        alt="Portrait of character"
-    />
+    <img class="portrait" src={`/portraits/${data.characterId}.png`} alt="Portrait of character" />
     <div class="metadata">
         {#if isEditingName}
             <form class="searchForm" onsubmit={commitNameChangeForm}>
@@ -119,8 +136,8 @@
             {$_('edit.totalDamage', { values: { dmg: Math.trunc(result.totalDamage) } })}
         </h2>
         <div>
-            <span class="char-name">{$_(`characters.${moveset.characterId}.name`)} &bull;</span>
-            <span class="emblem">3rd</span>
+            <GameEmblem gameId={data.gameId ?? ''}></GameEmblem>
+            <span class="char-name">{$_(`characters.${data.characterId}.name`)}</span>
         </div>
     </div>
 </section>
@@ -139,7 +156,10 @@
     <tbody>
         {#each result.snapshots as snap, i}
             <tr data-testid="move-row">
-                <td>{snap.name}</td>
+                <td>
+                    {getTranslatedMoveNotation(snap.id)}
+                    <span class="move-name">{getTranslatedMoveName(snap.id)}</span>
+                </td>
                 <td>{snap.baseDamage}</td>
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
@@ -160,7 +180,7 @@
 
 {#if isSelectModalOpen}
     <SelectMoveModal
-        moveList={moveset.moves}
+        moves={namedMoves}
         onConfirm={addMove}
         onCancel={() => (isSelectModalOpen = false)}
     ></SelectMoveModal>
@@ -216,6 +236,11 @@
             margin-right: auto;
             display: block;
             width: 100%;
+        }
+
+        .move-name {
+            font-size: 0.8em;
+            color: rgb(73, 73, 73);
         }
     }
 

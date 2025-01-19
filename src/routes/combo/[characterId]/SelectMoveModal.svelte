@@ -5,29 +5,39 @@
     import type { Move } from '@/moveTypes';
     import Icon from '@/common/components/Icon.svelte';
 
+    // A wrapper on top of Move that includes name and notation.
+    // It's necessary to have this data on one type in order to
+    // search filter based on these keys.
+    type NamedMove = {
+        name: string;
+        notation: string;
+        move: Move;
+    };
+
     type Props = {
-        moveList: Move[];
+        moves: NamedMove[];
         onConfirm: (move: Move) => void;
         onCancel: () => void;
     };
-    let { moveList, onConfirm, onCancel }: Props = $props();
+    
+    let { moves, onConfirm, onCancel }: Props = $props();
 
     let searchQuery: string = $state('');
-    const fuse = new Fuse(moveList, {
+    const fuse = new Fuse(moves, {
         threshold: 0.2,
         keys: ['name', 'notation']
     });
-    let filteredMoves: Move[] = $derived(getFilteredMoves(searchQuery));
+    let filteredMoves: NamedMove[] = $derived(getFilteredMoves(searchQuery));
     let selectedMoveIndex = $state(0);
     let isSearchEmpty = $derived(searchQuery.trim() === '');
     let moveListElement: Element | undefined = $state(undefined);
-    let headers = $state(new SvelteMap<string, string | undefined>());
+    let sectionHeaders = $state(new SvelteMap<string, string | undefined>());
 
-    function getFilteredMoves(query: string): Move[] {
+    function getFilteredMoves(query: string): NamedMove[] {
         if (isSearchEmpty) {
-            return moveList;
+            return moves;
         } else {
-            const result = fuse.search<Move>(query);
+            const result = fuse.search<NamedMove>(query);
             return result.map((r) => r.item);
         }
     }
@@ -36,7 +46,7 @@
         e.preventDefault();
 
         if (filteredMoves.length > 0) {
-            onConfirm(filteredMoves[selectedMoveIndex]);
+            onConfirm(filteredMoves[selectedMoveIndex].move);
         }
     }
 
@@ -68,12 +78,12 @@
         filteredMoves; // Re-run this effect when filteredMoves updates
         selectedMoveIndex = 0; // Select the first move in the list.
 
-        headers.clear();
+        sectionHeaders.clear();
         const alreadyFound: string[] = [];
         filteredMoves.forEach((move) => {
-            if (!alreadyFound.includes(move.category)) {
-                headers.set(move.notation, move.category);
-                alreadyFound.push(move.category);
+            if (!alreadyFound.includes(move.move.category)) {
+                sectionHeaders.set(move.move.id, move.move.category);
+                alreadyFound.push(move.move.category);
             }
         });
     });
@@ -108,13 +118,13 @@
             <button class="cancel" onclick={onCancel}><Icon src="/icons/close.svg" /></button>
         </div>
         <div class="move-list" bind:this={moveListElement}>
-            {#each filteredMoves as move, i (move.notation)}
-                {#if headers.has(move.notation)}
-                    <h3>{$_(`edit.moveTypes.${headers.get(move.notation) as string}`)}</h3>
+            {#each filteredMoves as move, i (move.move.id)}
+                {#if sectionHeaders.has(move.move.id)}
+                    <h3>{$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}</h3>
                 {/if}
                 <button
                     class={i == selectedMoveIndex ? 'move selected' : 'move'}
-                    onclick={() => onConfirm(move)}
+                    onclick={() => onConfirm(move.move)}
                     data-testid="add-move"
                 >
                     <div class="line">
@@ -123,11 +133,11 @@
                         <div class="filler"></div>
                         <div class="damage">
                             <Icon src={'/icons/fist.svg'} />
-                            {move.baseDamage}
+                            {move.move.baseDamage}
                         </div>
                         <div class="proration">
                             <Icon src={'/icons/trend-down.svg'} />
-                            {move.proration * 100}%
+                            {move.move.proration * 100}%
                         </div>
                     </div>
                 </button>

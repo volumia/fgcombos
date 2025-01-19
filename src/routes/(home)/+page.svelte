@@ -20,7 +20,6 @@
     };
 
     let { data }: { data: PageData } = $props();
-    console.log(data.combos);
 
     let gamesData = rawGamesData as GamesDataType;
 
