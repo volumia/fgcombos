@@ -72,11 +72,12 @@
         <h2>{$_('home.browseSection.title')}</h2>
         {#each data.combos as combo}
             <ComboCard
+                id={combo.id}
                 title={combo.title}
                 totalDamage={combo.damage}
                 gameId={combo.game_name ?? ''}
                 characterId={combo.character_name ?? ''}
-                likes={combo.likeCount}
+                likes={combo.like_count}
                 userName="Gyro"
             ></ComboCard>
         {/each}

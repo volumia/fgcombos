@@ -1,10 +1,9 @@
 <script lang="ts">
     import GameEmblem from '@/common/components/GameEmblem.svelte';
-    import Icon from '@/common/components/Icon.svelte';
-    import { IconSrcType } from '@/common/components/IconSrcType';
     import { _ } from 'svelte-i18n';
 
     type Props = {
+        id: string;
         title: string;
         totalDamage: number;
         gameId: string;
@@ -13,10 +12,10 @@
         userName: string;
     };
 
-    let { title, totalDamage, gameId, characterId, likes, userName }: Props = $props();
+    let { id, title, totalDamage, gameId, characterId, likes, userName }: Props = $props();
 </script>
 
-<a class="card" href="/combo/ryu-sf3ts">
+<a class="card" href={`/view/${id}`}>
     <div class="area-title">
         <h3>{title}</h3>
     </div>

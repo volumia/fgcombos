@@ -5,27 +5,31 @@
     import type { Move, ComboSnapshot, ComboResult } from '@/moveTypes';
     import SelectMoveModal from './SelectMoveModal.svelte';
     import GameEmblem from '@/common/components/GameEmblem.svelte';
+    import { RevertableValue } from '@/lib/util/revertableValue.svelte';
+    import { resolveCombo } from '@/lib/games/sf3ts/calc';
+    import clsx from 'clsx';
 
     let { data }: { data: PageData } = $props();
     const moveset = data.moveset;
     const cid = data.characterId;
+    const canEdit = data.hasEditPermissions;
     if ($locale) {
-        addMessages($locale, data.localeMessages);
+        addMessages($locale, data.localeDict);
     }
 
     let moves: Move[] = $state([]);
     let result: ComboResult = $derived(resolveCombo(moves));
     let isSelectModalOpen: boolean = $state(false);
-    let isEditingName = $state(false);
-    let comboName = $state('Combo name');
-    let editedName = $state(comboName);
-    let namedMoves = $derived(moveset.moves.map(move => {
-        return {
-            move,
-            notation: getTranslatedMoveNotation(move.id),
-            name: getTranslatedMoveName(move.id),
-        }
-    }));
+    let comboName = new RevertableValue<string>('Combo name');
+    let namedMoves = $derived(
+        moveset.moves.map((move) => {
+            return {
+                move,
+                notation: getTranslatedMoveNotation(move.id),
+                name: getTranslatedMoveName(move.id)
+            };
+        })
+    );
 
     function getTranslatedMoveName(id: string) {
         return $_(`characters.${cid}.moves.${id}.name`);
@@ -33,31 +37,6 @@
 
     function getTranslatedMoveNotation(id: string) {
         return $_(`characters.${cid}.moves.${id}.notation`);
-    }
-
-    function resolveCombo(moves: Move[]): ComboResult {
-        let result: ComboResult = {
-            snapshots: [],
-            totalDamage: 0
-        };
-        let multiplier = 1;
-
-        moves.forEach((move) => {
-            let damage = move.baseDamage * multiplier;
-            result.totalDamage += damage;
-
-            result.snapshots.push({
-                id: move.id,
-                baseDamage: move.baseDamage,
-                proration: move.proration,
-                multiplier,
-                finalDamage: damage
-            });
-
-            multiplier *= move.proration;
-        });
-
-        return result;
     }
 
     function openAddModal() {
@@ -70,25 +49,17 @@
     }
 
     function beginNameChange() {
-        isEditingName = true;
-        editedName = comboName;
+        if (canEdit) {
+            comboName.beginEdit();
+        }
     }
 
-    function commitNameChange() {
-        isEditingName = false;
-        comboName = editedName;
-    }
-
-    function commitNameChangeForm(e?: SubmitEvent) {
+    function formConfirmNameChange(e?: SubmitEvent) {
         if (e) {
             e.preventDefault();
         }
 
-        commitNameChange();
-    }
-
-    function cancelNameChange() {
-        isEditingName = false;
+        comboName.confirm();
     }
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -110,26 +81,28 @@
 <section class="summary-area">
     <img class="portrait" src={`/portraits/${data.characterId}.png`} alt="Portrait of character" />
     <div class="metadata">
-        {#if isEditingName}
-            <form class="searchForm" onsubmit={commitNameChangeForm}>
+        {#if comboName.isEditing}
+            <form class="searchForm" onsubmit={formConfirmNameChange}>
                 <input
                     type="search"
                     id="editName"
                     name="editName"
                     autocomplete="off"
                     use:focusElement
-                    bind:value={editedName}
+                    bind:value={comboName.value}
                 />
                 <input type="submit" hidden />
             </form>
-            <button onclick={commitNameChange}>{$_('common.confirm')}</button>
-            <button onclick={cancelNameChange}>{$_('common.cancel')}</button>
+            <button onclick={() => comboName.confirm()}>{$_('common.confirm')}</button>
+            <button onclick={() => comboName.revert()}>{$_('common.cancel')}</button>
         {:else}
             <h1 class="title">
-                {comboName}
-                <button class="icon-button" onclick={beginNameChange}
-                    ><Icon src="/icons/pencil.svg"></Icon></button
-                >
+                {comboName.value}
+                {#if true}
+                    <button class="icon-button" onclick={beginNameChange}>
+                        <Icon src="/icons/pencil.svg"></Icon>
+                    </button>
+                {/if}
             </h1>
         {/if}
         <h2 class="totalDamage">
@@ -142,7 +115,7 @@
     </div>
 </section>
 
-<table data-testid="move-table">
+<table class={clsx('move-table', canEdit && 'edit-mode')} data-testid="move-table">
     <thead>
         <tr>
             <th class="col-move">{$_('edit.colHead.move')}</th>
@@ -150,7 +123,9 @@
             <th class="col-multiplier">{$_('edit.colHead.multiplier')}</th>
             <th class="col-proration">{$_('edit.colHead.proration')}</th>
             <th class="col-finalDamage">{$_('edit.colHead.finalDamage')}</th>
-            <th class="col-delete"></th>
+            {#if canEdit}
+                <th class="col-delete"></th>
+            {/if}
         </tr>
     </thead>
     <tbody>
@@ -164,11 +139,13 @@
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
                 <td>{Math.trunc(snap.finalDamage)}</td>
-                <td
-                    ><button onclick={() => moves.splice(i, 1)}
-                        ><Icon src="/icons/close.svg"></Icon></button
-                    ></td
-                >
+                {#if canEdit}
+                    <td>
+                        <button onclick={() => moves.splice(i, 1)}>
+                            <Icon src="/icons/close.svg"></Icon>
+                        </button>
+                    </td>
+                {/if}
             </tr>
         {/each}
     </tbody>
@@ -178,14 +155,16 @@
     {$_('edit.totalDamage', { values: { dmg: Math.trunc(result.totalDamage) } })}
 </div>
 
-{#if isSelectModalOpen}
-    <SelectMoveModal
-        moves={namedMoves}
-        onConfirm={addMove}
-        onCancel={() => (isSelectModalOpen = false)}
-    ></SelectMoveModal>
-{:else}
-    <button onclick={openAddModal} data-testid="open-add-modal">+ {$_('edit.addMove')}</button>
+{#if canEdit}
+    {#if isSelectModalOpen}
+        <SelectMoveModal
+            moves={namedMoves}
+            onConfirm={addMove}
+            onCancel={() => (isSelectModalOpen = false)}
+        ></SelectMoveModal>
+    {:else}
+        <button onclick={openAddModal} data-testid="open-add-modal">+ {$_('edit.addMove')}</button>
+    {/if}
 {/if}
 
 <style lang="scss">
@@ -227,7 +206,7 @@
         }
     }
 
-    table {
+    table.move-table {
         width: 100%;
         border-collapse: collapse;
 

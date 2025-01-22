@@ -45,9 +45,9 @@ export type Database = {
           creator: number | null
           damage: number
           game_name: string | null
-          id: number
-          likeCount: number
-          moves: number[] | null
+          id: string
+          like_count: number
+          move_ids: string[] | null
           title: string
         }
         Insert: {
@@ -56,9 +56,9 @@ export type Database = {
           creator?: number | null
           damage?: number
           game_name?: string | null
-          id?: number
-          likeCount?: number
-          moves?: number[] | null
+          id: string
+          like_count?: number
+          move_ids?: string[] | null
           title?: string
         }
         Update: {
@@ -67,9 +67,9 @@ export type Database = {
           creator?: number | null
           damage?: number
           game_name?: string | null
-          id?: number
-          likeCount?: number
-          moves?: number[] | null
+          id?: string
+          like_count?: number
+          move_ids?: string[] | null
           title?: string
         }
         Relationships: [
