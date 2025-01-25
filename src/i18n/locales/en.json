@@ -2,6 +2,7 @@
     "common": {
         "confirm": "Confirm",
         "cancel": "Cancel",
+        "edit": "Edit",
         "create": "Create",
         "byUser": "By {name}",
         "likes": "{likes} likes",

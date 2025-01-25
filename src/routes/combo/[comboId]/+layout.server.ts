@@ -1,9 +1,11 @@
 import type { LayoutServerLoad } from './$types';
 import type { Moveset } from '@/moveTypes';
 import { error } from '@sveltejs/kit';
-import { supabase } from '@/lib/supabase/client';
+import type { Database } from '@/lib/supabase/databaseTypes';
 
-export const load: LayoutServerLoad = async ({ params, fetch }) => {
+type Combo = Database['public']['Tables']['combos']['Row'];
+
+export const load: LayoutServerLoad = async ({ params, fetch, locals: { supabase, user } }) => {
     const getComboPromise = supabase.from('combos').select().eq('id', params.comboId);
 
     const getComboQuery = await getComboPromise;
@@ -12,7 +14,7 @@ export const load: LayoutServerLoad = async ({ params, fetch }) => {
         error(404);
     }
 
-    const combo = getComboQuery.data[0];
+    const combo: Combo = getComboQuery.data[0];
 
     if (combo.character_name == undefined || combo.game_name == undefined) {
         error(404);
@@ -35,13 +37,13 @@ export const load: LayoutServerLoad = async ({ params, fetch }) => {
     }
 
     const moveset: Moveset = characterResponse.data[0].moveset as Moveset;
-
+    
     return {
         characterId: combo.character_name,
         gameId: combo.game_name,
         combo,
         moveset,
         localeDict,
-        hasEditPermissions: false
+        hasEditPermissions: user ? combo.creator_uid === user.id : false 
     };
 };

@@ -18,7 +18,7 @@
   "devDependencies": {
     "@playwright/test": "^1.46.0",
     "@sveltejs/adapter-auto": "^3.2.2",
-    "@sveltejs/kit": "^2.15.0",
+    "@sveltejs/kit": "^2.16.1",
     "@sveltejs/vite-plugin-svelte": "^4.0.4",
     "@types/eslint": "^9.6.0",
     "@types/node": "^22.10.5",
@@ -39,6 +39,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.14",
     "clsx": "^2.1.1",
     "fuse.js": "^7.0.0",

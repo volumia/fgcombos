@@ -8,28 +8,38 @@
     import { RevertableValue } from '@/lib/util/revertableValue.svelte';
     import { resolveCombo } from '@/lib/games/sf3ts/calc';
     import clsx from 'clsx';
+    import { SvelteMap } from 'svelte/reactivity';
+    import type { PostgrestError } from '@supabase/supabase-js';
+
+    enum UpdateStatus {
+        NotSent,
+        Sending,
+        Failed,
+        Sent
+    }
 
     let { data }: { data: PageData } = $props();
     const moveset = data.moveset;
     const cid = data.characterId;
-    const canEdit = data.hasEditPermissions;
     if ($locale) {
         addMessages($locale, data.localeDict);
     }
 
-    let moves: Move[] = $state([]);
-    let result: ComboResult = $derived(resolveCombo(moves));
-    let isSelectModalOpen: boolean = $state(false);
-    let comboName = new RevertableValue<string>('Combo name');
-    let namedMoves = $derived(
-        moveset.moves.map((move) => {
-            return {
-                move,
-                notation: getTranslatedMoveNotation(move.id),
-                name: getTranslatedMoveName(move.id)
-            };
-        })
+    let idToMoveMap: SvelteMap<string, Move> = createMapFromMoves(data.moveset.moves);
+    let moves = $state(
+        new RevertableValue<Move[]>(data.combo.move_ids ? moveIdsToMoves(data.combo.move_ids) : [])
     );
+    let namedMoveset = $derived(createNamedMoves(moveset.moves));
+    let result: ComboResult = $derived(resolveCombo(moves.value));
+
+    let comboTitle = new RevertableValue<string>(data.combo.title);
+    let isSelectModalOpen: boolean = $state(false);
+
+    let inEditMode: boolean = $state(false);
+    let isEditing = $derived(data.hasEditPermissions && inEditMode);
+
+    let updateStatus = $state(UpdateStatus.NotSent);
+    let updateStatusText: string = $state('');
 
     function getTranslatedMoveName(id: string) {
         return $_(`characters.${cid}.moves.${id}.name`);
@@ -44,22 +54,79 @@
     }
 
     function addMove(move: Move) {
-        moves.push(move);
+        moves.value.push(move);
         isSelectModalOpen = false;
     }
 
-    function beginNameChange() {
-        if (canEdit) {
-            comboName.beginEdit();
+    function enterEditMode() {
+        inEditMode = true;
+        comboTitle.beginEdit();
+        moves.beginEdit([...moves.value]);
+    }
+
+    function cancelEdits() {
+        inEditMode = false;
+        comboTitle.revert();
+        moves.revert();
+    }
+
+    async function confirmEdits() {
+        inEditMode = false;
+        comboTitle.confirm();
+        moves.confirm();
+
+        updateStatus = UpdateStatus.Sending;
+        const moveIds = movesToMoveIds(moves.value);
+        const { error, status } = await data.supabase
+            .from('combos')
+            .update({
+                title: comboTitle.value,
+                move_ids: moveIds,
+                damage: result.totalDamage
+            })
+            .eq('id', data.combo.id);
+
+        if (error) {
+            updateStatus = UpdateStatus.Failed;
+            updateStatusText = error.message;
+        } else {
+            updateStatus = UpdateStatus.Sent;
         }
     }
 
-    function formConfirmNameChange(e?: SubmitEvent) {
-        if (e) {
-            e.preventDefault();
-        }
+    function createMapFromMoves(moves: Move[]): SvelteMap<string, Move> {
+        const map: SvelteMap<string, Move> = new SvelteMap<string, Move>();
+        moves.forEach((move) => map.set(move.id, move));
+        return map;
+    }
 
-        comboName.confirm();
+    function moveIdsToMoves(ids: string[]): Move[] {
+        const moves: Move[] = [];
+        ids.forEach((id) => {
+            const move = idToMoveMap.get(id);
+            if (move == undefined) {
+                throw new Error(
+                    `Move with id: ${id} should exist but does not exist in id->Move map`
+                );
+            } else {
+                moves.push(move);
+            }
+        });
+        return moves;
+    }
+
+    function movesToMoveIds(moves: Move[]): string[] {
+        return moves.map((move) => move.id);
+    }
+
+    function createNamedMoves(moves: Move[]) {
+        return moves.map((move) => {
+            return {
+                move,
+                notation: getTranslatedMoveNotation(move.id),
+                name: getTranslatedMoveName(move.id)
+            };
+        });
     }
 
     function handleKeyDown(e: KeyboardEvent) {
@@ -70,39 +137,39 @@
             e.preventDefault();
         }
     }
-
-    function focusElement(el: HTMLElement) {
-        el.focus();
-    }
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
 
+{#if updateStatus === UpdateStatus.Sending}
+    <h3>Sending edits...</h3>
+{:else if updateStatus === UpdateStatus.Sent}
+    <h3>Sent!</h3>
+{:else if updateStatus === UpdateStatus.Failed}
+    <h3>Failed. Error: {updateStatusText}</h3>
+{/if}
+
+{#if isEditing}
+    <button onclick={confirmEdits}>{$_('common.confirm')}</button>
+    <button onclick={cancelEdits}>{$_('common.cancel')}</button>
+{:else}
+    <button onclick={enterEditMode}>{$_('common.edit')}</button>
+{/if}
+
 <section class="summary-area">
     <img class="portrait" src={`/portraits/${data.characterId}.png`} alt="Portrait of character" />
     <div class="metadata">
-        {#if comboName.isEditing}
-            <form class="searchForm" onsubmit={formConfirmNameChange}>
-                <input
-                    type="search"
-                    id="editName"
-                    name="editName"
-                    autocomplete="off"
-                    use:focusElement
-                    bind:value={comboName.value}
-                />
-                <input type="submit" hidden />
-            </form>
-            <button onclick={() => comboName.confirm()}>{$_('common.confirm')}</button>
-            <button onclick={() => comboName.revert()}>{$_('common.cancel')}</button>
+        {#if isEditing}
+            <input
+                type="text"
+                id="editName"
+                name="editName"
+                autocomplete="off"
+                bind:value={comboTitle.value}
+            />
         {:else}
             <h1 class="title">
-                {comboName.value}
-                {#if true}
-                    <button class="icon-button" onclick={beginNameChange}>
-                        <Icon src="/icons/pencil.svg"></Icon>
-                    </button>
-                {/if}
+                {comboTitle.value}
             </h1>
         {/if}
         <h2 class="totalDamage">
@@ -115,7 +182,7 @@
     </div>
 </section>
 
-<table class={clsx('move-table', canEdit && 'edit-mode')} data-testid="move-table">
+<table class={clsx('move-table', isEditing && 'edit-mode')} data-testid="move-table">
     <thead>
         <tr>
             <th class="col-move">{$_('edit.colHead.move')}</th>
@@ -123,7 +190,7 @@
             <th class="col-multiplier">{$_('edit.colHead.multiplier')}</th>
             <th class="col-proration">{$_('edit.colHead.proration')}</th>
             <th class="col-finalDamage">{$_('edit.colHead.finalDamage')}</th>
-            {#if canEdit}
+            {#if isEditing}
                 <th class="col-delete"></th>
             {/if}
         </tr>
@@ -139,9 +206,9 @@
                 <td>{Math.trunc(snap.multiplier * 100)}%</td>
                 <td>{Math.trunc(snap.proration * 100)}%</td>
                 <td>{Math.trunc(snap.finalDamage)}</td>
-                {#if canEdit}
+                {#if isEditing}
                     <td>
-                        <button onclick={() => moves.splice(i, 1)}>
+                        <button onclick={() => moves.value.splice(i, 1)}>
                             <Icon src="/icons/close.svg"></Icon>
                         </button>
                     </td>
@@ -155,10 +222,10 @@
     {$_('edit.totalDamage', { values: { dmg: Math.trunc(result.totalDamage) } })}
 </div>
 
-{#if canEdit}
+{#if isEditing}
     {#if isSelectModalOpen}
         <SelectMoveModal
-            moves={namedMoves}
+            moves={namedMoveset}
             onConfirm={addMove}
             onCancel={() => (isSelectModalOpen = false)}
         ></SelectMoveModal>
@@ -204,6 +271,11 @@
                 font-size: 1.25em;
             }
         }
+
+        #editName {
+            font-size: 3rem;
+            width: 100%;
+        }
     }
 
     table.move-table {
@@ -232,6 +304,7 @@
     th,
     td {
         padding: $spacing-1;
+        height: 2.5em;
     }
 
     .col-move {

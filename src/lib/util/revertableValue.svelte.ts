@@ -8,11 +8,11 @@ export class RevertableValue<T> {
         this._value = defaultValue;
     }
 
-    public get value(): T | undefined {
+    public get value(): T {
         if (this._isEditing) {
-            return this._editingValue;
+            return this._editingValue!;
         } else {
-            return this._value;
+            return this._value!;
         }
     }
 
@@ -26,9 +26,14 @@ export class RevertableValue<T> {
         return this._isEditing;
     }
 
-    beginEdit() {
+    beginEdit(value?: T) {
         this._isEditing = true;
-        this._editingValue = this._value;
+        if (value != undefined) {
+            this._editingValue = value;
+        }
+        else {
+            this._editingValue = this._value;
+        }
     }
 
     confirm() {

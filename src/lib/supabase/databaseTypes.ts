@@ -42,7 +42,7 @@ export type Database = {
         Row: {
           character_name: string | null
           created_at: string
-          creator: number | null
+          creator_uid: string | null
           damage: number
           game_name: string | null
           id: string
@@ -53,7 +53,7 @@ export type Database = {
         Insert: {
           character_name?: string | null
           created_at?: string
-          creator?: number | null
+          creator_uid?: string | null
           damage?: number
           game_name?: string | null
           id: string
@@ -64,7 +64,7 @@ export type Database = {
         Update: {
           character_name?: string | null
           created_at?: string
-          creator?: number | null
+          creator_uid?: string | null
           damage?: number
           game_name?: string | null
           id?: string
@@ -78,6 +78,13 @@ export type Database = {
             columns: ["character_name"]
             isOneToOne: false
             referencedRelation: "characters"
+            referencedColumns: ["name"]
+          },
+          {
+            foreignKeyName: "combos_game_name_fkey"
+            columns: ["game_name"]
+            isOneToOne: false
+            referencedRelation: "games"
             referencedColumns: ["name"]
           },
         ]
