@@ -30,7 +30,12 @@
     },
     "edit": {
         "searchPlaceholder": "Search moves",
+        "viewing": "Viewing",
+        "editing": "Editing",
         "addMove": "Add Move",
+        "publishing": "Publishing edits...",
+        "publishedSuccess": "Edits published",
+        "publishedFail": "An error has occurred while publishing edits.",
         "colHead": {
             "move": "Move",
             "baseDamage": "Base damage",

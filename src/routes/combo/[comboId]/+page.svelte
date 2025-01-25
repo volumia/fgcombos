@@ -19,7 +19,7 @@
     }
 
     let { data }: { data: PageData } = $props();
-    
+
     const moveset = data.moveset;
     const cid = data.characterId;
     if ($locale) {
@@ -40,7 +40,6 @@
     let isEditing = $derived(data.hasEditPermissions && inEditMode);
 
     let updateStatus = $state(UpdateStatus.NotSent);
-    let updateStatusText: string = $state('');
 
     function getTranslatedMoveName(id: string) {
         return $_(`characters.${cid}.moves.${id}.name`);
@@ -89,7 +88,6 @@
 
         if (error) {
             updateStatus = UpdateStatus.Failed;
-            updateStatusText = error.message;
         } else {
             updateStatus = UpdateStatus.Sent;
         }
@@ -143,18 +141,24 @@
 <svelte:window onkeydown={handleKeyDown} />
 
 {#if updateStatus === UpdateStatus.Sending}
-    <h3>Sending edits...</h3>
+    <h3>{$_('edit.publishing')}</h3>
 {:else if updateStatus === UpdateStatus.Sent}
-    <h3>Sent!</h3>
+    <h3>{$_('edit.publishedSuccess')}</h3>
 {:else if updateStatus === UpdateStatus.Failed}
-    <h3>Failed. Error: {updateStatusText}</h3>
+    <h3>{$_('edit.publishedFail')}</h3>
 {/if}
 
-{#if isEditing}
-    <button onclick={confirmEdits}>{$_('common.confirm')}</button>
-    <button onclick={cancelEdits}>{$_('common.cancel')}</button>
-{:else}
-    <button onclick={enterEditMode}>{$_('common.edit')}</button>
+{#if data.hasEditPermissions}
+     <div class="mode-area">
+         {#if isEditing}
+             <div class="mode-indicator">{$_('edit.editing')}</div>
+             <button onclick={confirmEdits}>{$_('common.confirm')}</button>
+             <button onclick={cancelEdits}>{$_('common.cancel')}</button>
+         {:else}
+             <div class="mode-indicator">{$_('edit.viewing')}</div>
+             <button onclick={enterEditMode}>{$_('common.edit')}</button>
+         {/if}
+     </div>
 {/if}
 
 <section class="summary-area">
@@ -237,6 +241,23 @@
 
 <style lang="scss">
     @use '@/style/variables' as *;
+
+    .mode-area {
+        vertical-align: middle;
+
+        .mode-indicator {
+            display: inline-block;
+            width: $size-12;
+            height: 2em;
+
+            background-color: rgb(255, 255, 255);
+            border: 1px solid black;
+            border-radius: 1000px;
+
+            text-align: center;
+            vertical-align: middle;
+        }
+    }
 
     .icon-button {
         display: inline-flex;
