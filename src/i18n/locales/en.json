@@ -8,6 +8,13 @@
         "likes": "{likes} likes",
         "damageNumber": "{dmg} DMG"
     },
+    "nav": {
+        "home": "Home"
+    },
+    "auth": {
+        "signIn": "Sign in",
+        "signUp": "Sign up"
+    },
     "home": {
         "createSection": {
             "title": "Create a combo",

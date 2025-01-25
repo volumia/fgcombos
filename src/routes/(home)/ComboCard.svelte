@@ -15,7 +15,7 @@
     let { id, title, totalDamage, gameId, characterId, likes, userName }: Props = $props();
 </script>
 
-<a class="card" href={`/view/${id}`}>
+<a class="card" href={`/combo/${id}`}>
     <div class="area-title">
         <h3>{title}</h3>
     </div>

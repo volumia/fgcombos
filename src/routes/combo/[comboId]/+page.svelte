@@ -19,6 +19,7 @@
     }
 
     let { data }: { data: PageData } = $props();
+    
     const moveset = data.moveset;
     const cid = data.characterId;
     if ($locale) {
@@ -132,7 +133,7 @@
     function handleKeyDown(e: KeyboardEvent) {
         const isDocumentFocusedOnElement =
             document.activeElement && document.activeElement.nodeName !== 'BODY';
-        if (!isDocumentFocusedOnElement && e.code === 'KeyA' && !isSelectModalOpen) {
+        if (!isDocumentFocusedOnElement && e.code === 'KeyA' && !isSelectModalOpen && isEditing) {
             isSelectModalOpen = true;
             e.preventDefault();
         }
