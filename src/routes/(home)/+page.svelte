@@ -2,47 +2,66 @@
     import { _ } from 'svelte-i18n';
     import { goto } from '$app/navigation';
     import Dropdown from '@/lib/components/Dropdown.svelte';
-    import rawGamesData from '@/data/games.json';
     import ComboCard from './ComboCard.svelte';
     import type { PageData } from './$types';
-
-    type CharacterData = {
-        id: string;
-    };
-
-    type GameData = {
-        title: string;
-        characters: CharacterData[];
-    };
-
-    type GamesDataType = {
-        games: GameData[];
-    };
+    import { createCombo } from '@/lib/supabase/functions';
+    import type { DBGame, DBCharacter, DBCombo } from '@/lib/supabase/databaseTypes';
 
     let { data }: { data: PageData } = $props();
 
-    let gamesData = rawGamesData as GamesDataType;
+    let selectedGame: DBGame | undefined = $state();
+    let selectedCharacter: DBCharacter | undefined = $state();
 
-    let selectedGame: GameData | undefined = $state();
-    let selectedCharacter: CharacterData | undefined = $state();
-
-    let gameOptions: { value: GameData; text: string }[] = gamesData.games.map((g) => {
-        return { value: g, text: g.title };
+    let gameOptions: { value: DBGame; text: string }[] = data.games.map((g) => {
+        return { value: g, text: `games.${g.name}.name` };
     });
 
-    let characterOptions: { value: CharacterData; text: string }[] = $derived(
-        selectedGame != undefined
-            ? selectedGame.characters.map((c) => ({ value: c, text: `characters.${c.id}.name` }))
-            : []
-    );
+    let characterOptions: { value: DBCharacter; text: string }[] = $state([]);
+    let abortGetCharacters: AbortController = new AbortController();
+
+    let createComboPromise: Promise<DBCombo | undefined> | undefined = $state();
+    let waitingForComboCreation: boolean = $state(false);
+
+    $effect(() => {
+        if (selectedGame != undefined) {
+            abortGetCharacters.abort();
+            abortGetCharacters = new AbortController();
+
+            const getCharactersPromise = data.supabase
+                .from('characters')
+                .select()
+                .eq('game_name', selectedGame.name)
+                .abortSignal(abortGetCharacters.signal);
+
+            getCharactersPromise.then(({ data }) => {
+                if (data != undefined) {
+                    characterOptions = data.map((v) => ({
+                        value: v,
+                        text: `characters.${v.name}.name`
+                    }));
+                }
+            });
+        }
+    });
 
     let canCreateCombo: boolean = $derived(
         selectedGame != undefined && selectedCharacter != undefined
     );
 
-    function goToEditPage() {
-        if (selectedCharacter) {
-            goto(`/combo/${selectedCharacter?.id}`);
+    async function createComboWithSettings() {
+        if (selectedGame && selectedCharacter) {
+            if (!createComboPromise) {
+                createComboPromise = createCombo(selectedGame.name, selectedCharacter.name);
+                waitingForComboCreation = true;
+
+                const combo = await createComboPromise;
+                if (combo) {
+                    await goto(`/combo/${combo.id}`);
+                }
+
+                createComboPromise = undefined;
+                waitingForComboCreation = false;
+            }
         }
     }
 </script>
@@ -66,7 +85,15 @@
             placeholder={$_('home.createSection.selectCharacterPlaceholder')}
         ></Dropdown>
 
-        <button onclick={goToEditPage} disabled={!canCreateCombo}>{$_('common.create')}</button>
+        {#if waitingForComboCreation}
+            <button onclick={createComboWithSettings} disabled>
+                {$_('common.pending')}
+            </button>
+        {:else}
+            <button onclick={createComboWithSettings} disabled={!canCreateCombo}>
+                {$_('common.create')}
+            </button>
+        {/if}
     </section>
     <section class="browse">
         <h2>{$_('home.browseSection.title')}</h2>

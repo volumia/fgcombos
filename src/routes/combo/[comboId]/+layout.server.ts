@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 import type { Moveset } from '@/moveTypes';
 import { error } from '@sveltejs/kit';
-import type { Database } from '@/lib/supabase/databaseTypes';
+import type { Database } from '@/lib/supabase/databaseGeneratedTypes';
 
 type Combo = Database['public']['Tables']['combos']['Row'];
 

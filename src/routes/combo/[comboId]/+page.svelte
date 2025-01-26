@@ -152,8 +152,8 @@
      <div class="mode-area">
          {#if isEditing}
              <div class="mode-indicator">{$_('edit.editing')}</div>
-             <button onclick={confirmEdits}>{$_('common.confirm')}</button>
              <button onclick={cancelEdits}>{$_('common.cancel')}</button>
+             <button onclick={confirmEdits}>{$_('common.confirm')}</button>
          {:else}
              <div class="mode-indicator">{$_('edit.viewing')}</div>
              <button onclick={enterEditMode}>{$_('common.edit')}</button>

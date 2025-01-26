@@ -1,7 +1,6 @@
 {
     "characters": {
         "ryu-sf3ts": {
-            "name": "Ryu",
             "moves": {
                     "5lp": {
                         "name": "Light Punch",
