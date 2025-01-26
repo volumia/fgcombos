@@ -99,7 +99,7 @@
         <h2>{$_('home.browseSection.title')}</h2>
         {#each data.combos as combo}
             <ComboCard
-                id={combo.id}
+                id={combo.url_id}
                 title={combo.title}
                 totalDamage={combo.damage}
                 gameId={combo.game_name ?? ''}

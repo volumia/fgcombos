@@ -19,7 +19,7 @@
         onConfirm: (move: Move) => void;
         onCancel: () => void;
     };
-    
+
     let { moves, onConfirm, onCancel }: Props = $props();
 
     let searchQuery: string = $state('');
@@ -91,10 +91,21 @@
     // Scroll the selected (not the same as page focus) move into view when navigating with arrow keys.
     $effect(() => {
         if (moveListElement) {
-            const moveEls = moveListElement.querySelectorAll('.move');
-            const moveEl = moveEls[selectedMoveIndex];
-            if (moveEl) {
-                moveEl.scrollIntoView({ block: 'nearest' });
+            // Special case for the first move on the list.
+            // When scrolling to the first move, scroll the header above it into view instead,
+            // so it isn't lost during scrolling.
+            if (selectedMoveIndex === 0) {
+                const topMostHeaderEl = moveListElement.querySelector('.section-header');
+                if (topMostHeaderEl) {
+                    topMostHeaderEl.scrollIntoView({ block: 'nearest' });
+                }
+            } 
+            else {
+                const moveEls = moveListElement.querySelectorAll('.move');
+                const moveEl = moveEls[selectedMoveIndex];
+                if (moveEl) {
+                    moveEl.scrollIntoView({ block: 'nearest' });
+                }
             }
         }
     });
@@ -120,7 +131,9 @@
         <div class="move-list" bind:this={moveListElement}>
             {#each filteredMoves as move, i (move.move.id)}
                 {#if sectionHeaders.has(move.move.id)}
-                    <h3>{$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}</h3>
+                    <h3 class="section-header">
+                        {$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}
+                    </h3>
                 {/if}
                 <button
                     class={i == selectedMoveIndex ? 'move selected' : 'move'}
@@ -156,8 +169,12 @@
     }
 
     .modal {
-        position: absolute;
-        max-width: 400px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        min-width: $size-48;
         padding: $spacing-1;
 
         font-size: 1em;
@@ -189,7 +206,7 @@
     }
 
     .move-list {
-        max-height: 200px;
+        max-height: $size-48;
         overflow-y: scroll;
     }
 
@@ -207,6 +224,7 @@
         .line {
             display: flex;
             flex-direction: row;
+            align-items: center;
             gap: 0.5ch;
 
             .name {

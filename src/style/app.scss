@@ -53,3 +53,11 @@ h6 {
 #__next {
     isolation: isolate;
 }
+/* 
+    End CSS Reset
+*/
+
+button {
+    margin-top: $spacing-2;
+    margin-bottom: $spacing-2;
+}

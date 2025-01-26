@@ -6,7 +6,7 @@ import type { Database } from '@/lib/supabase/databaseGeneratedTypes';
 type Combo = Database['public']['Tables']['combos']['Row'];
 
 export const load: LayoutServerLoad = async ({ params, fetch, locals: { supabase, user } }) => {
-    const getComboPromise = supabase.from('combos').select().eq('id', params.comboId);
+    const getComboPromise = supabase.from('combos').select().eq('url_id', params.comboId);
 
     const getComboQuery = await getComboPromise;
 

@@ -45,10 +45,11 @@ export type Database = {
           creator_uid: string | null
           damage: number
           game_name: string | null
-          id: string
+          id: number
           like_count: number
           move_ids: string[] | null
           title: string
+          url_id: string
         }
         Insert: {
           character_name?: string | null
@@ -56,10 +57,11 @@ export type Database = {
           creator_uid?: string | null
           damage?: number
           game_name?: string | null
-          id: string
+          id?: number
           like_count?: number
           move_ids?: string[] | null
           title?: string
+          url_id?: string
         }
         Update: {
           character_name?: string | null
@@ -67,10 +69,11 @@ export type Database = {
           creator_uid?: string | null
           damage?: number
           game_name?: string | null
-          id?: string
+          id?: number
           like_count?: number
           move_ids?: string[] | null
           title?: string
+          url_id?: string
         }
         Relationships: [
           {
@@ -109,7 +112,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      nanoid: {
+        Args: {
+          size?: number
+          alphabet?: string
+          additionalbytesfactor?: number
+        }
+        Returns: string
+      }
+      nanoid_optimized: {
+        Args: {
+          size: number
+          alphabet: string
+          mask: number
+          step: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
