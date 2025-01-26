@@ -9,14 +9,7 @@
     import { resolveCombo } from '@/lib/games/sf3ts/calc';
     import clsx from 'clsx';
     import { SvelteMap } from 'svelte/reactivity';
-    import type { PostgrestError } from '@supabase/supabase-js';
-
-    enum UpdateStatus {
-        NotSent,
-        Sending,
-        Failed,
-        Sent
-    }
+    import { onMount } from 'svelte';
 
     let { data }: { data: PageData } = $props();
 
@@ -38,8 +31,8 @@
 
     let inEditMode: boolean = $state(false);
     let isEditing = $derived(data.hasEditPermissions && inEditMode);
-
-    let updateStatus = $state(UpdateStatus.NotSent);
+    let publishStatus: string | undefined = $state();
+    let clearPublishStatusTimeoutId: number | undefined = $state();
 
     function getTranslatedMoveName(id: string) {
         return $_(`characters.${cid}.moves.${id}.name`);
@@ -60,12 +53,14 @@
 
     function enterEditMode() {
         inEditMode = true;
+        publishStatus = undefined;
         comboTitle.beginEdit();
         moves.beginEdit([...moves.value]);
     }
 
     function cancelEdits() {
         inEditMode = false;
+        publishStatus = undefined;
         comboTitle.revert();
         moves.revert();
     }
@@ -75,9 +70,10 @@
         comboTitle.confirm();
         moves.confirm();
 
-        updateStatus = UpdateStatus.Sending;
         const moveIds = movesToMoveIds(moves.value);
-        const { error, status } = await data.supabase
+        publishStatus = $_('edit.publishing');
+
+        const { error } = await data.supabase
             .from('combos')
             .update({
                 title: comboTitle.value,
@@ -87,9 +83,11 @@
             .eq('id', data.combo.id);
 
         if (error) {
-            updateStatus = UpdateStatus.Failed;
-        } else {
-            updateStatus = UpdateStatus.Sent;
+            publishStatus = $_('edit.publishFailure');
+        }
+        else {
+            publishStatus = $_('edit.publishSuccess');
+            clearPublishStatusTimeoutId = window.setTimeout(() => publishStatus = undefined, 7000);
         }
     }
 
@@ -136,29 +134,33 @@
             e.preventDefault();
         }
     }
+
+    onMount(() => {
+        return () => {
+            if (clearPublishStatusTimeoutId) {
+                window.clearTimeout(clearPublishStatusTimeoutId);
+            }
+        };
+    });
 </script>
 
 <svelte:window onkeydown={handleKeyDown} />
 
-{#if updateStatus === UpdateStatus.Sending}
-    <h3>{$_('edit.publishing')}</h3>
-{:else if updateStatus === UpdateStatus.Sent}
-    <h3>{$_('edit.publishedSuccess')}</h3>
-{:else if updateStatus === UpdateStatus.Failed}
-    <h3>{$_('edit.publishedFail')}</h3>
+{#if publishStatus}
+    <h3>{publishStatus}</h3>
 {/if}
 
 {#if data.hasEditPermissions}
-     <div class="mode-area">
-         {#if isEditing}
-             <div class="mode-indicator">{$_('edit.editing')}</div>
-             <button onclick={cancelEdits}>{$_('common.cancel')}</button>
-             <button onclick={confirmEdits}>{$_('common.confirm')}</button>
-         {:else}
-             <div class="mode-indicator">{$_('edit.viewing')}</div>
-             <button onclick={enterEditMode}>{$_('common.edit')}</button>
-         {/if}
-     </div>
+    <div class="mode-area">
+        {#if isEditing}
+            <div class="mode-indicator">{$_('edit.editing')}</div>
+            <button onclick={cancelEdits}>{$_('common.cancel')}</button>
+            <button onclick={confirmEdits}>{$_('common.confirm')}</button>
+        {:else}
+            <div class="mode-indicator">{$_('edit.viewing')}</div>
+            <button onclick={enterEditMode}>{$_('common.edit')}</button>
+        {/if}
+    </div>
 {/if}
 
 <section class="summary-area">
