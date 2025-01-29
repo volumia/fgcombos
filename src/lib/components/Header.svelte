@@ -1,8 +1,27 @@
 <script lang="ts">
-    import type { User } from "@supabase/supabase-js";
+    import type { AuthError, User } from "@supabase/supabase-js";
     import { _ } from "svelte-i18n";
+    import type { TypedSupabaseClient } from "../supabase/databaseTypes";
+    import { goto } from "$app/navigation";
     
-    let { user }: {user: User|null} = $props();
+    type Props = {
+        user: User|null;
+        supabase: TypedSupabaseClient;
+    };
+    
+    let { user, supabase }: Props = $props();
+    let signOutPromise: Promise<{error: AuthError | null}> | undefined = $state();
+
+    async function signOut() {
+        if (!signOutPromise) {
+            signOutPromise = supabase.auth.signOut();
+            const { error } = await signOutPromise;
+            if (error) {
+                goto('/auth/error');
+            }
+            signOutPromise = undefined;
+        }
+    }
 </script>
 
 <header>
@@ -10,8 +29,9 @@
     <div class="side-separator"></div>
     {#if user != null}
         <span>{user.id.slice(0, 8)}</span>
+        <button onclick={signOut}>{$_('auth.signOut')}</button>
     {:else}
-        <a href="/auth">{$_('auth.signIn')}</a>
+        <a href="/auth/sign-in">{$_('auth.signIn')}</a>
     {/if}
 </header>
 
@@ -29,6 +49,7 @@
         height: $size-8;
         margin-bottom: $spacing-2;
         padding: $spacing-2;
+        gap: $spacing-4;
 
         background-color: rgb(189, 189, 189);
     }

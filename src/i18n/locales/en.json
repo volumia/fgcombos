@@ -14,8 +14,22 @@
         "home": "Home"
     },
     "auth": {
+        "email": "Email",
+        "password": "Password",
         "signIn": "Sign in",
-        "signUp": "Sign up"
+        "signUp": "Sign up",
+        "signUpNow": "Sign up now",
+        "signOut": "Sign out",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "confirmPassword": "Confirm password",
+        "errorPasswordsDontMatch": "Passwords must match",
+        "signInGreeting": "Welcome back", 
+        "signUpGreeting": "Make an account",
+        "emailPlaceholder": "you@example.com", 
+        "passwordPlaceholder": "••••••••",
+        "resetPassword": "Reset password",
+        "resetPasswordGreeting": "Reset your password"
     },
     "home": {
         "createSection": {

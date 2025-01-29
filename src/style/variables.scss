@@ -1,3 +1,25 @@
+// Colors
+$clr-blue30: rgb(0, 0, 204);
+
+$clr-red100: rgb(255, 244, 245);
+$clr-red90: rgb(250, 218, 220);
+$clr-red50: rgb(253, 65, 81);
+
+$clr-primary80: rgb(115, 97, 249);
+
+$clr-mono100: rgb(255, 255, 255);
+$clr-mono90:  rgb(229, 229, 229);
+$clr-mono80:  rgb(204, 204, 204);
+$clr-mono70:  rgb(178, 178, 178);
+$clr-mono60:  rgb(153, 153, 153);
+$clr-mono50:  rgb(127, 127, 127);
+$clr-mono40:  rgb(102, 102, 102);
+$clr-mono30:  rgb(76, 76, 76);
+$clr-mono20:  rgb(51, 51, 51);
+$clr-mono10:  rgb(25, 25, 25);
+$clr-mono0:   rgb(0, 0, 0);
+
+// Sizing and spacing
 $sg: 8px;
 $size-1: $sg * 1;
 $size-2: $sg * 2;
@@ -18,5 +40,9 @@ $size-64: $sg * 64;
 $mg: 0.25em;
 $spacing-1: $mg * 1;
 $spacing-2: $mg * 2;
+$spacing-3: $mg * 3;
 $spacing-4: $mg * 4;
 $spacing-8: $mg * 8;
+$spacing-10: $mg * 10;
+$spacing-12: $mg * 12;
+$spacing-16: $mg * 16;

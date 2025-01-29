@@ -4,11 +4,11 @@ import { userState } from './store.svelte';
 type DBCombo = Database['public']['Tables']['combos']['Row'];
 
 export async function createCombo(gameId: string, characterId: string): Promise<DBCombo | undefined> {
-    const db = userState.db;
+    const sb = userState.supabase;
     const user = userState.user;
 
-    if (db && user) {
-        const comboResponse = await db
+    if (sb && user) {
+        const comboResponse = await sb
             .from('combos')
             .insert({
                 creator_uid: user.id,

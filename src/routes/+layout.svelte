@@ -14,7 +14,7 @@
 
         userState.user = data.user;
         userState.session = data.session;
-        userState.db = data.supabase;
+        userState.supabase = data.supabase;
 
         const { data: authData } = supabase.auth.onAuthStateChange((_, newSession) => {
             if (newSession?.expires_at !== session?.expires_at) {
@@ -26,6 +26,6 @@
     });
 </script>
 
-<Header user={data.user}></Header>
+<Header user={data.user} supabase={data.supabase}></Header>
 
 {@render children()}
