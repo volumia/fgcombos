@@ -274,6 +274,7 @@
 
         width: 100%;
         margin: $spacing-4 0;
+        gap: $spacing-2;
 
         .portrait {
             display: block;
@@ -289,10 +290,12 @@
             h1.title {
                 font-size: 2em;
                 vertical-align: middle;
+                margin: 0;
             }
 
             h2.totalDamage {
                 font-size: 1.25em;
+                margin: $spacing-1 0;
             }
         }
 

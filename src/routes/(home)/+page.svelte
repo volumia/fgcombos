@@ -56,7 +56,7 @@
 
                 const combo = await createComboPromise;
                 if (combo) {
-                    await goto(`/combo/${combo.id}`);
+                    await goto(`/combo/${combo.url_id}`);
                 }
 
                 createComboPromise = undefined;
