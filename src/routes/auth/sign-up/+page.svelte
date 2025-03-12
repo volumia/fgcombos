@@ -72,5 +72,5 @@
 </main>
 
 <style lang="scss">
-    @import '../authForm.scss';
+    @forward '../authForm.scss';
 </style>

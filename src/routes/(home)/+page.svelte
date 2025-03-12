@@ -112,11 +112,13 @@
 </div>
 
 <style lang="scss">
+    @use '@/style/variables' as *;
     @use '@/style/mixins' as *;
 
     .division {
         display: grid;
-        grid-template: 'a b' auto / 0.3fr 0.7fr;
+        grid-template: 'a b' auto / 0.3fr 1fr;
+        gap: $spacing-4;
 
         @include for-size(phone, down) {
             grid-template:
