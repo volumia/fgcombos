@@ -53,6 +53,8 @@
 </div>
 
 <style lang="scss">
+    @use '@/style/variables.scss' as *;
+    
     .select-wrapper {
         $border: black;
 
@@ -70,10 +72,10 @@
             appearance: none;
 
             width: 100%;
-            padding-top: 0.1em;
-            padding-bottom: 0.1em;
-            padding-inline-start: 0;
-            padding-inline-end: 1em;
+            padding-top: 0.2em;
+            padding-bottom: 0.2em;
+            padding-inline-start: $spacing-1;
+            padding-inline-end: $spacing-1;
             margin: 0;
 
             font-family: inherit;
@@ -82,8 +84,12 @@
             line-height: inherit;
 
             background: url('/icons/dropdown-arrow.svg') center right no-repeat;
-            border: 0;
+            color: $clr-mono10;
+            background-color: $clr-mono90;
+            border: 1px solid $clr-mono10;
             outline: none;
+
+            border-radius: $rounded-sm;
 
             &:focus {
                 outline: 2px solid $border;
@@ -91,12 +97,12 @@
 
             &:disabled {
                 cursor: not-allowed;
-                background-color: #dadada;
+                background-color: $clr-mono70;
             }
         }
 
         .placeholder {
-            color: rgb(73, 73, 73);
+            color: $clr-mono40;
         }
     }
 </style>

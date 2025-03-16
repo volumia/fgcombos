@@ -1,64 +1,16 @@
 @use 'variables.scss' as *;
 @forward 'inter.css';
+@forward 'reset.css';
 
 :root { font-family: 'Inter', sans-serif; }
 @supports (font-variation-settings: normal) {
   :root { font-family: 'InterVariable', sans-serif; }
 }
 
-/*
-  Josh's Custom CSS Reset
-  https://www.joshwcomeau.com/css/custom-css-reset/
-*/
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-* {
-    margin: 0;
-}
-
 body {
-    color: $clr-mono0;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+    color: $clr-mono90;
+    background-color: rgb(5, 5, 5);
 }
-
-img,
-picture,
-video,
-canvas,
-svg {
-    display: block;
-    max-width: 100%;
-}
-
-input,
-button,
-textarea,
-select {
-    font: inherit;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    overflow-wrap: break-word;
-}
-
-#root,
-#__next {
-    isolation: isolate;
-}
-/* 
-    End CSS Reset
-*/
 
 *:focus-visible {
     outline: 2px solid $clr-mono0;
@@ -98,6 +50,14 @@ input[type='url'] {
 
     &:disabled {
         background-color: $clr-mono70;
+    }
+}
+
+a {
+    color: $clr-mono100;
+    
+    &:visited {
+        color: $clr-mono80;
     }
 }
 

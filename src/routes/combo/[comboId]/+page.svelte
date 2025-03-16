@@ -164,28 +164,35 @@
 {/if}
 
 <section class="summary-area">
-    <img class="portrait" src={`/portraits/${data.characterId}.png`} alt="Portrait of character" />
-    <div class="metadata">
-        {#if isEditing}
-            <input
-                type="text"
-                id="editName"
-                name="editName"
-                autocomplete="off"
-                bind:value={comboTitle.value}
-            />
-        {:else}
-            <h1 class="title">
-                {comboTitle.value}
-            </h1>
-        {/if}
-        <h2 class="totalDamage">
-            {$_('edit.totalDamage', { values: { dmg: Math.trunc(result.totalDamage) } })}
-        </h2>
-        <div>
-            <GameEmblem gameId={data.gameId ?? ''}></GameEmblem>
-            <span class="char-name">{$_(`characters.${data.characterId}.name`)}</span>
+    <div class="primary-info panel">
+        <img class="portrait" src={`/portraits/${data.characterId}.png`} alt="Portrait of character" />
+        <div class="metadata">
+            <div>
+                <GameEmblem gameId={data.gameId ?? ''}></GameEmblem>
+                <span class="char-name">{$_(`characters.${data.characterId}.name`)}</span>
+            </div>
+            {#if isEditing}
+                <input
+                    type="text"
+                    id="editName"
+                    name="editName"
+                    autocomplete="off"
+                    bind:value={comboTitle.value}
+                />
+            {:else}
+                <h1 class="title">
+                    {comboTitle.value}
+                </h1>
+            {/if}
+            <span>{$_(`common.byUser`, { values: { name: '{Placeholder}' } })}</span>
         </div>
+    </div>
+
+    <div class="secondary-info panel">
+        <h3>{$_('home.browseSection.totalDamage')}</h3>
+        <h2 class="totalDamage">
+            {Math.trunc(result.totalDamage)}
+        </h2>
     </div>
 </section>
 
@@ -244,6 +251,14 @@
 <style lang="scss">
     @use '@/style/variables' as *;
 
+    .panel {
+        padding: $spacing-2;
+        
+        background-color: $clr-mono10;
+        border: 1px solid $clr-mono20;
+        border-radius: $rounded-md;
+    }
+
     .mode-area {
         vertical-align: middle;
 
@@ -252,8 +267,8 @@
             width: $size-12;
             height: 2em;
 
-            background-color: rgb(255, 255, 255);
-            border: 1px solid black;
+            background-color: $clr-mono10;
+            border: 1px solid $clr-mono20;
             border-radius: 1000px;
 
             text-align: center;
@@ -276,10 +291,39 @@
         margin: $spacing-4 0;
         gap: $spacing-2;
 
+        .primary-info {
+            display: flex;
+            flex-direction: row;
+            gap: $spacing-2;
+            
+            width: 80%;
+        }
+
+        .secondary-info {
+            width: 20%;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            h3 {
+                width: max-content;
+                margin: $spacing-2 auto;
+                font-size: 1em;
+            }
+
+            h2 {
+                width: max-content;
+                margin: -0.25em auto;
+                font-size: 4em;
+            }
+        }
+
         .portrait {
             display: block;
-            height: 25em;
-            aspect-ratio: 1/1.5;
+            width: $sg*32;
+            height: $sg*32;
             object-fit: cover;
         }
 
@@ -318,20 +362,22 @@
 
         .move-name {
             font-size: 0.8em;
-            color: rgb(73, 73, 73);
+            color: $clr-mono80;
         }
     }
 
     table,
     th,
     td {
-        border: 1px solid black;
+        border: 1px solid $clr-mono20;
     }
 
     th,
     td {
         padding: $spacing-1;
         height: 2.5em;
+
+        background-color: $clr-mono10;
     }
 
     .col-move {

@@ -46,15 +46,24 @@
         align-items: center;
         
         width: 100%;
-        height: $size-8;
+        height: $size-6;
         margin-bottom: $spacing-2;
         padding: $spacing-2;
         gap: $spacing-4;
 
-        background-color: rgb(189, 189, 189);
+        background-color: $clr-mono10;
+        border-bottom: 1px solid $clr-mono20;
     }
 
     .side-separator {
         flex-grow: 1;
+    }
+
+    a {
+        color: $clr-mono100;
+    
+        &:visited {
+            color: $clr-mono100;
+        }
     }
 </style>

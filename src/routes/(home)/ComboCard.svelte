@@ -49,8 +49,8 @@
         height: $size-10;
         margin: $spacing-2 0;
 
-        border: 1px solid black;
-        color: white;
+        border: 1px solid $clr-mono40;
+        color: $clr-mono100;
         background:
             url('/images/ryu-sf3ts/slice.png') center left no-repeat,
             linear-gradient(to right, rgb(19, 6, 6), 90%, rgb(192, 192, 192));
@@ -59,7 +59,7 @@
         text-decoration: none;
 
         &:hover {
-            outline: 1px solid black;
+            outline: 1px solid $clr-mono40;
             -webkit-backdrop-filter: brightness(110%);
             backdrop-filter: brightness(150%);
         }
