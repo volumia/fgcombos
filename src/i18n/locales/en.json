@@ -32,6 +32,12 @@
         "resetPasswordGreeting": "Reset your password",
         "resetPasswordConfirmation": "An email containing a link to reset your account's password has been sent to your email address."
     },
+    "user": {
+        "avatarAlt": "A user avatar",
+        "actions": {
+            "viewProfile": "View profile"
+        }
+    },
     "home": {
         "createSection": {
             "title": "Create a combo",

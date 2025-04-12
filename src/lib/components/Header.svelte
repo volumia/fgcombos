@@ -1,27 +1,39 @@
 <script lang="ts">
-    import type { AuthError, User } from "@supabase/supabase-js";
-    import { _ } from "svelte-i18n";
-    import type { TypedSupabaseClient } from "../supabase/databaseTypes";
-    import { goto } from "$app/navigation";
-    import Icon from "@/lib/components/Icon.svelte";
-    
+    import type { AuthError, User } from '@supabase/supabase-js';
+    import { _ } from 'svelte-i18n';
+    import type { TypedSupabaseClient } from '../supabase/databaseTypes';
+    import { goto } from '$app/navigation';
+    import Icon from '@/lib/components/Icon.svelte';
+    import UserActionsMenu from './UserActionsMenu.svelte';
+    import Avatar from './Avatar.svelte';
+    import avatarDefaultUrl from '$lib/assets/avatars/default.jpg';
+
     type Props = {
-        user: User|null;
+        user: User | null;
         supabase: TypedSupabaseClient;
     };
-    
+
     let { user, supabase }: Props = $props();
-    let signOutPromise: Promise<{error: AuthError | null}> | undefined = $state();
+    let signOutPromise: Promise<{ error: AuthError | null }> | undefined = $state();
+
+    let showActionsMenu = $state(false);
 
     async function signOut() {
         if (!signOutPromise) {
             signOutPromise = supabase.auth.signOut();
+            
             const { error } = await signOutPromise;
             if (error) {
                 goto('/auth/error');
             }
+            
             signOutPromise = undefined;
+            showActionsMenu = false;
         }
+    }
+
+    function toggleActionsMenu() {
+        showActionsMenu = !showActionsMenu;
     }
 </script>
 
@@ -29,10 +41,16 @@
     <a href="/"><Icon src="/icons/logo.svg" size={1.25}></Icon></a>
     <div class="side-separator"></div>
     {#if user != null}
-        <span>{user.id.slice(0, 8)}</span>
-        <button onclick={signOut}>{$_('auth.signOut')}</button>
+        <button onclick={toggleActionsMenu} class="content-only">
+            <Avatar size={2}></Avatar>
+        </button>
     {:else}
         <a href="/auth/sign-in">{$_('auth.signIn')}</a>
+    {/if}
+
+    {#if showActionsMenu}
+        <UserActionsMenu userName="(Placeholder)" avatarUrl={avatarDefaultUrl} onSignOut={signOut}
+        ></UserActionsMenu>
     {/if}
 </header>
 
@@ -41,11 +59,12 @@
     @use '@/style/mixins' as *;
 
     header {
+        position: relative;
         display: flex;
         flex-direction: row;
         justify-content: start;
         align-items: center;
-        
+
         width: 100%;
         height: $size-6;
         margin-bottom: $spacing-2;
@@ -62,7 +81,7 @@
 
     a {
         color: $clr-mono100;
-    
+
         &:visited {
             color: $clr-mono100;
         }
