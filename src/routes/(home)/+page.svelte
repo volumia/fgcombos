@@ -116,7 +116,7 @@
             <ComboCard
                 id={combo.url_id}
                 title={combo.title}
-                totalDamage={combo.damage}
+                totalDamage={Math.trunc(combo.damage)}
                 gameId={combo.game_name ?? ''}
                 characterId={combo.character_name ?? ''}
                 likes={combo.like_count}

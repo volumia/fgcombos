@@ -1,5 +1,5 @@
 <script lang="ts">
-    import GameEmblem from '@/common/components/GameEmblem.svelte';
+    import GameEmblem from '@/lib/components/GameEmblem.svelte';
     import { _ } from 'svelte-i18n';
 
     type Props = {

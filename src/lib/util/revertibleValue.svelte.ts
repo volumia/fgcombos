@@ -1,4 +1,4 @@
-export class RevertableValue<T> {
+export class RevertibleValue<T> {
     private _isEditing: boolean = $state(false);
     private _editingValue: T | undefined = $state();
     private _value: T | undefined = $state();

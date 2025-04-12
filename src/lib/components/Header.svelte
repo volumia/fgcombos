@@ -3,7 +3,7 @@
     import { _ } from "svelte-i18n";
     import type { TypedSupabaseClient } from "../supabase/databaseTypes";
     import { goto } from "$app/navigation";
-    import Icon from "@/common/components/Icon.svelte";
+    import Icon from "@/lib/components/Icon.svelte";
     
     type Props = {
         user: User|null;

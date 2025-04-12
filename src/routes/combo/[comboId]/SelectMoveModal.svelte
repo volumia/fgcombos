@@ -3,7 +3,7 @@
     import { _ } from 'svelte-i18n';
     import Fuse from 'fuse.js';
     import type { Move } from '@/moveTypes';
-    import Icon from '@/common/components/Icon.svelte';
+    import Icon from '@/lib/components/Icon.svelte';
 
     // A wrapper on top of Move that includes name and notation.
     // It's necessary to have this data on one type in order to

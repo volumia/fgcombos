@@ -1,11 +1,11 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import { _, locale, addMessages } from 'svelte-i18n';
-    import Icon from '@/common/components/Icon.svelte';
+    import Icon from '@/lib/components/Icon.svelte';
     import type { Move, ComboSnapshot, ComboResult } from '@/moveTypes';
     import SelectMoveModal from './SelectMoveModal.svelte';
-    import GameEmblem from '@/common/components/GameEmblem.svelte';
-    import { RevertableValue } from '@/lib/util/revertableValue.svelte';
+    import GameEmblem from '@/lib/components/GameEmblem.svelte';
+    import { RevertibleValue } from '@/lib/util/revertibleValue.svelte';
     import { resolveCombo } from '@/lib/games/sf3ts/calc';
     import clsx from 'clsx';
     import { SvelteMap } from 'svelte/reactivity';
@@ -21,12 +21,12 @@
 
     let idToMoveMap: SvelteMap<string, Move> = createMapFromMoves(data.moveset.moves);
     let moves = $state(
-        new RevertableValue<Move[]>(data.combo.move_ids ? moveIdsToMoves(data.combo.move_ids) : [])
+        new RevertibleValue<Move[]>(data.combo.move_ids ? moveIdsToMoves(data.combo.move_ids) : [])
     );
     let namedMoveset = $derived(createNamedMoves(moveset.moves));
     let result: ComboResult = $derived(resolveCombo(moves.value));
 
-    let comboTitle = new RevertableValue<string>(data.combo.title);
+    let comboTitle = new RevertibleValue<string>(data.combo.title);
     let isSelectModalOpen: boolean = $state(false);
 
     let inEditMode: boolean = $state(false);
