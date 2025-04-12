@@ -44,5 +44,15 @@
     "clsx": "^2.1.1",
     "fuse.js": "^7.0.0",
     "svelte-i18n": "^4.0.1"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@parcel/watcher"
+    ],
+    "onlyBuiltDependencies": [
+      "es5-ext",
+      "esbuild",
+      "svelte-preprocess"
+    ]
   }
 }

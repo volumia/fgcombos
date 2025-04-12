@@ -84,10 +84,12 @@
 
         if (error) {
             publishStatus = $_('edit.publishFailure');
-        }
-        else {
+        } else {
             publishStatus = $_('edit.publishSuccess');
-            clearPublishStatusTimeoutId = window.setTimeout(() => publishStatus = undefined, 7000);
+            clearPublishStatusTimeoutId = window.setTimeout(
+                () => (publishStatus = undefined),
+                7000
+            );
         }
     }
 
@@ -165,11 +167,15 @@
 
 <section class="summary-area">
     <div class="primary-info panel">
-        <img class="portrait" src={`/portraits/${data.characterId}.png`} alt="Portrait of character" />
+        <img
+            class="portrait"
+            src={`/portraits/${data.characterId}.png`}
+            alt="Portrait of character"
+        />
         <div class="metadata">
-            <div>
+            <div class="char-name-parent">
                 <GameEmblem gameId={data.gameId ?? ''}></GameEmblem>
-                <span class="char-name">{$_(`characters.${data.characterId}.name`)}</span>
+                <span>{$_(`characters.${data.characterId}.name`)}</span>
             </div>
             {#if isEditing}
                 <input
@@ -184,7 +190,9 @@
                     {comboTitle.value}
                 </h1>
             {/if}
-            <span>{$_(`common.byUser`, { values: { name: '{Placeholder}' } })}</span>
+            <div class="user-name-parent">
+                <span>{$_(`common.byUser`, { values: { name: '{Placeholder}' } })}</span>
+            </div>
         </div>
     </div>
 
@@ -253,7 +261,7 @@
 
     .panel {
         padding: $spacing-2;
-        
+
         background-color: $clr-mono10;
         border: 1px solid $clr-mono20;
         border-radius: $rounded-md;
@@ -295,7 +303,7 @@
             display: flex;
             flex-direction: row;
             gap: $spacing-2;
-            
+
             width: 80%;
         }
 
@@ -322,14 +330,18 @@
 
         .portrait {
             display: block;
-            width: $sg*32;
-            height: $sg*32;
+            width: $sg * 32;
+            height: $sg * 32;
             object-fit: cover;
         }
 
         .metadata {
             width: auto;
             font-size: 1.5em;
+
+            .char-name-parent {
+                font-size: 0.8em;
+            }
 
             h1.title {
                 font-size: 2em;
@@ -340,6 +352,10 @@
             h2.totalDamage {
                 font-size: 1.25em;
                 margin: $spacing-1 0;
+            }
+
+            .user-name-parent {
+                font-size: 0.8em;
             }
         }
 

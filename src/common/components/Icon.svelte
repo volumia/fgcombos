@@ -42,6 +42,7 @@
             styles.push(['-webkit-mask', `url(${src}) no-repeat center`]);
             styles.push(['mask', `url(${src}) no-repeat center`]);
             styles.push(['background-color', color !== undefined ? color : 'currentColor']);
+            styles.push(['mask-size', 'cover']);
         }
         else if (srcType === IconSrcType.SvgPath) {
             styles.push(['fill', color !== undefined ? color : 'currentColor']);

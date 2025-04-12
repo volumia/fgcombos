@@ -3,6 +3,7 @@
     import { _ } from "svelte-i18n";
     import type { TypedSupabaseClient } from "../supabase/databaseTypes";
     import { goto } from "$app/navigation";
+    import Icon from "@/common/components/Icon.svelte";
     
     type Props = {
         user: User|null;
@@ -25,7 +26,7 @@
 </script>
 
 <header>
-    <a href="/">{$_('nav.home')}</a>
+    <a href="/"><Icon src="/icons/logo.svg" size={1.25}></Icon></a>
     <div class="side-separator"></div>
     {#if user != null}
         <span>{user.id.slice(0, 8)}</span>

@@ -18,6 +18,7 @@
 
     let characterOptions: { value: DBCharacter; text: string }[] = $state([]);
     let abortGetCharacters: AbortController = new AbortController();
+    let waitingForCharacterRetrieval: boolean = $state(false);
 
     let createComboPromise: Promise<DBCombo | undefined> | undefined = $state();
     let waitingForComboCreation: boolean = $state(false);
@@ -26,6 +27,8 @@
         if (selectedGame != undefined) {
             abortGetCharacters.abort();
             abortGetCharacters = new AbortController();
+
+            waitingForCharacterRetrieval = true;
 
             const getCharactersPromise = data.supabase
                 .from('characters')
@@ -39,6 +42,8 @@
                         value: v,
                         text: `characters.${v.name}.name`
                     }));
+
+                    waitingForCharacterRetrieval = false;
                 }
             });
         }
@@ -47,6 +52,16 @@
     let canCreateCombo: boolean = $derived(
         selectedGame != undefined && selectedCharacter != undefined
     );
+
+    let characterDropdownPlaceholder: string = $derived.by(() => {
+        if (waitingForCharacterRetrieval) {
+            return 'common.loading';
+        } else if (selectedCharacter == undefined) {
+            return 'home.createSection.selectCharacterPlaceholder';
+        } 
+
+        return 'common.loading';
+    });
 
     async function createComboWithSettings() {
         if (selectedGame && selectedCharacter) {
@@ -82,7 +97,7 @@
             options={characterOptions}
             bind:value={selectedCharacter}
             disabled={characterOptions.length === 0}
-            placeholder={$_('home.createSection.selectCharacterPlaceholder')}
+            placeholder={characterDropdownPlaceholder}
         ></Dropdown>
 
         {#if waitingForComboCreation}
@@ -105,7 +120,7 @@
                 gameId={combo.game_name ?? ''}
                 characterId={combo.character_name ?? ''}
                 likes={combo.like_count}
-                userName="Gyro"
+                userName="(Placeholder)"
             ></ComboCard>
         {/each}
     </section>
