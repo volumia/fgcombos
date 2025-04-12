@@ -29,7 +29,8 @@
         "emailPlaceholder": "you@example.com", 
         "passwordPlaceholder": "••••••••",
         "resetPassword": "Reset password",
-        "resetPasswordGreeting": "Reset your password"
+        "resetPasswordGreeting": "Reset your password",
+        "resetPasswordConfirmation": "An email containing a link to reset your account's password has been sent to your email address."
     },
     "home": {
         "createSection": {
