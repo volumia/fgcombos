@@ -5,6 +5,7 @@ import { locale, waitLocale } from 'svelte-i18n';
 import '@/i18n/index';
 import type { LayoutLoad } from './$types';
 import type { Database } from '@/lib/supabase/databaseGeneratedTypes';
+import type { DBProfile } from '@/lib/supabase/databaseTypes';
 
 export const load: LayoutLoad = async ({ data, depends, fetch }) => {
     /**
@@ -43,11 +44,20 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
         data: { user }
     } = await supabase.auth.getUser();
 
+    let profile: DBProfile | null = null;
+    if (user && user.id) {
+        const {
+            data: matchingProfile
+        } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+
+        profile = matchingProfile;
+    }
+
     if (browser) {
         locale.set(window.navigator.language);
     }
 
     await waitLocale();
 
-    return { session, supabase, user };
+    return { session, supabase, user, profile };
 };

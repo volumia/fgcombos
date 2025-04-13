@@ -34,6 +34,7 @@
     },
     "user": {
         "avatarAlt": "A user avatar",
+        "noUserNameFound": "(deleted)",
         "actions": {
             "viewProfile": "View profile"
         }
@@ -76,6 +77,10 @@
         "sf3ts": {
             "name": "Street Fighter 3 - Third Strike",
             "abbrev": "SF3TS"
+        },
+        "tk8": {
+            "name": "TEKKEN 8",
+            "abbrev": "TK8"
         }
     },
     "characters": {

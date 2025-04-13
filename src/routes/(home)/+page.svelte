@@ -6,6 +6,7 @@
     import type { PageData } from './$types';
     import { createCombo } from '@/lib/supabase/functions';
     import type { DBGame, DBCharacter, DBCombo } from '@/lib/supabase/databaseTypes';
+    import { profileNameOrDefault } from '@/lib/util/text';
 
     let { data }: { data: PageData } = $props();
 
@@ -120,7 +121,7 @@
                 gameId={combo.game_name ?? ''}
                 characterId={combo.character_name ?? ''}
                 likes={combo.like_count}
-                userName="(Placeholder)"
+                userName={profileNameOrDefault(combo.creator_profile_name)}
             ></ComboCard>
         {/each}
     </section>

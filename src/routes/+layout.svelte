@@ -26,6 +26,6 @@
     });
 </script>
 
-<Header user={data.user} supabase={data.supabase}></Header>
+<Header user={data.user} supabase={data.supabase} profile={data.profile}></Header>
 
 {@render children()}

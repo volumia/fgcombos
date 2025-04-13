@@ -12,13 +12,13 @@
 </script>
 
 <div class="actions-menu">
-    <button class="view-profile-button">
+    <a href={`/u/${userName}`} class="view-profile-button as-button">
         <Avatar src={avatarUrl} size={2.5}></Avatar>
         <div class="text-stack">
             <p class="view-profile">{$_('user.actions.viewProfile')}</p>
             <p class="profile-name">{userName}</p>
         </div>
-    </button>
+    </a>
     <button onclick={onSignOut}>{$_('auth.signOut')}</button>
 </div>
 
@@ -44,7 +44,7 @@
         border-radius: 0 0 0 $rounded-md;
     }
 
-    button {
+    button, .as-button {
         width: 100%;
         height: $size-6;
     }

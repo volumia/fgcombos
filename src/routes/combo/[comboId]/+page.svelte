@@ -10,6 +10,7 @@
     import clsx from 'clsx';
     import { SvelteMap } from 'svelte/reactivity';
     import { onMount } from 'svelte';
+    import { profileNameOrDefault } from '@/lib/util/text';
 
     let { data }: { data: PageData } = $props();
 
@@ -191,7 +192,11 @@
                 </h1>
             {/if}
             <div class="user-name-parent">
-                <span>{$_(`common.byUser`, { values: { name: '{Placeholder}' } })}</span>
+                {#if data.combo.creator_uid}
+                    <a href={`/u/${data.combo.creator_profile_name}`}>{$_(`common.byUser`, { values: { name: profileNameOrDefault(data.combo.creator_profile_name) } })}</a>
+                {:else}
+                    <span>{$_(`common.byUser`, { values: { name: profileNameOrDefault(data.combo.creator_profile_name) } })}</span>    
+                {/if}
             </div>
         </div>
     </div>

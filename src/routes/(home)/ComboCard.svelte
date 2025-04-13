@@ -1,5 +1,6 @@
 <script lang="ts">
     import GameEmblem from '@/lib/components/GameEmblem.svelte';
+    import { profileNameOrDefault } from '@/lib/util/text';
     import { _ } from 'svelte-i18n';
 
     type Props = {
@@ -30,7 +31,7 @@
             <GameEmblem {gameId}></GameEmblem>
             {$_(`characters.${characterId}.name`)}
         </span>
-        <span>{$_(`common.byUser`, { values: { name: userName } })}</span>
+        <span>{$_(`common.byUser`, { values: { name: profileNameOrDefault(userName) } })}</span>
         <span>{$_('common.likes', { values: { likes } })}</span>
     </div>
 </a>

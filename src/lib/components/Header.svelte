@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { AuthError, User } from '@supabase/supabase-js';
     import { _ } from 'svelte-i18n';
-    import type { TypedSupabaseClient } from '../supabase/databaseTypes';
+    import type { DBProfile, TypedSupabaseClient } from '../supabase/databaseTypes';
     import { goto } from '$app/navigation';
     import Icon from '@/lib/components/Icon.svelte';
     import UserActionsMenu from './UserActionsMenu.svelte';
@@ -11,9 +11,10 @@
     type Props = {
         user: User | null;
         supabase: TypedSupabaseClient;
+        profile: DBProfile | null
     };
 
-    let { user, supabase }: Props = $props();
+    let { user, supabase, profile }: Props = $props();
     let signOutPromise: Promise<{ error: AuthError | null }> | undefined = $state();
 
     let showActionsMenu = $state(false);
@@ -48,8 +49,8 @@
         <a href="/auth/sign-in">{$_('auth.signIn')}</a>
     {/if}
 
-    {#if showActionsMenu}
-        <UserActionsMenu userName="(Placeholder)" avatarUrl={avatarDefaultUrl} onSignOut={signOut}
+    {#if showActionsMenu && profile}
+        <UserActionsMenu userName={profile.profile_name} avatarUrl={avatarDefaultUrl} onSignOut={signOut}
         ></UserActionsMenu>
     {/if}
 </header>
