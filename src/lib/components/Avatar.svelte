@@ -1,13 +1,15 @@
 <script lang="ts">
     import { _ } from 'svelte-i18n';
     import avatarDefaultUrl from '$lib/assets/avatars/default.jpg';
+    import clsx from 'clsx';
 
     type Props = {
         src?: string;
         size?: number;
+        className?: string;
     };
 
-    const { src = avatarDefaultUrl, size = 1.5 }: Props = $props();
+    const { src = avatarDefaultUrl, size = 1.5, className }: Props = $props();
 
     let style = $derived(calculateStyle());
 
@@ -18,7 +20,7 @@
     }
 </script>
 
-<img class="avatar" {style} {src} alt={$_('user.avatarAlt')}/>
+<img {style} {src} class={clsx('avatar', className)} alt={$_('user.avatarAlt')}/>
 
 <style lang="scss">
     @use '@/style/variables' as *;

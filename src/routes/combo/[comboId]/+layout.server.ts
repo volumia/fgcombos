@@ -1,9 +1,7 @@
 import type { LayoutServerLoad } from './$types';
 import type { Moveset } from '@/moveTypes';
 import { error } from '@sveltejs/kit';
-import type { Database } from '@/lib/supabase/databaseGeneratedTypes';
-
-type Combo = Database['public']['Tables']['combos']['Row'];
+import type { DBCombo } from '@/lib/supabase/databaseTypes';
 
 export const load: LayoutServerLoad = async ({ params, fetch, locals: { supabase, user } }) => {
     const getComboPromise = supabase.from('combos').select().eq('url_id', params.comboId);
@@ -14,7 +12,7 @@ export const load: LayoutServerLoad = async ({ params, fetch, locals: { supabase
         error(404);
     }
 
-    const combo: Combo = getComboQuery.data[0];
+    const combo: DBCombo = getComboQuery.data[0];
 
     if (combo.character_name == undefined || combo.game_name == undefined) {
         error(404);

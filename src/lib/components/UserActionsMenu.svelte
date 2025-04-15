@@ -6,20 +6,26 @@
         userName: string;
         avatarUrl: string;
         onSignOut: () => void;
+        closeMenu: () => void;
     };
 
-    const { userName, avatarUrl, onSignOut }: Props = $props();
+    const { userName, avatarUrl, onSignOut, closeMenu }: Props = $props();
+
+    function signOut() {
+        onSignOut();
+        closeMenu();
+    }
 </script>
 
 <div class="actions-menu">
-    <a href={`/u/${userName}`} class="view-profile-button as-button">
+    <a href={`/u/${userName}`} onclick={closeMenu} class="view-profile-button as-button">
         <Avatar src={avatarUrl} size={2.5}></Avatar>
         <div class="text-stack">
             <p class="view-profile">{$_('user.actions.viewProfile')}</p>
             <p class="profile-name">{userName}</p>
         </div>
     </a>
-    <button onclick={onSignOut}>{$_('auth.signOut')}</button>
+    <button onclick={signOut}>{$_('auth.signOut')}</button>
 </div>
 
 <style lang="scss">
@@ -42,24 +48,37 @@
         background-color: $clr-mono20;
         border: 1px solid $clr-mono30;
         border-radius: 0 0 0 $rounded-md;
+
+        z-index: 10;
     }
 
-    button, .as-button {
+    button,
+    .as-button {
         width: 100%;
         height: $size-6;
     }
 
     .view-profile-button {
         display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text-stack {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
 
-        .text-stack {
-            flex-grow: 1;
-        }
+        flex-grow: 1;
+    }
 
-        .view-profile {
-            font-size: 0.8em;
-            color: $clr-mono20;
-        }
+    .view-profile {
+        font-size: 0.8em;
+        color: $clr-mono20;
+    }
+
+    .profile-name {
+        color: $clr-mono10;
     }
 </style>

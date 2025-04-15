@@ -11,7 +11,7 @@
     type Props = {
         user: User | null;
         supabase: TypedSupabaseClient;
-        profile: DBProfile | null
+        profile: DBProfile | null;
     };
 
     let { user, supabase, profile }: Props = $props();
@@ -22,12 +22,12 @@
     async function signOut() {
         if (!signOutPromise) {
             signOutPromise = supabase.auth.signOut();
-            
+
             const { error } = await signOutPromise;
             if (error) {
                 goto('/auth/error');
             }
-            
+
             signOutPromise = undefined;
             showActionsMenu = false;
         }
@@ -50,7 +50,11 @@
     {/if}
 
     {#if showActionsMenu && profile}
-        <UserActionsMenu userName={profile.profile_name} avatarUrl={avatarDefaultUrl} onSignOut={signOut}
+        <UserActionsMenu
+            userName={profile.profile_name}
+            avatarUrl={avatarDefaultUrl}
+            onSignOut={signOut}
+            closeMenu={toggleActionsMenu}
         ></UserActionsMenu>
     {/if}
 </header>

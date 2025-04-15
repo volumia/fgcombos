@@ -54,7 +54,7 @@
         color: $clr-mono100;
         background:
             url('/images/ryu-sf3ts/slice.png') center left no-repeat,
-            linear-gradient(to right, rgb(19, 6, 6), 90%, rgb(192, 192, 192));
+            linear-gradient(to right, rgb(10, 10, 10), 90%, rgb(192, 192, 192));
         background-size: contain, auto;
 
         text-decoration: none;
