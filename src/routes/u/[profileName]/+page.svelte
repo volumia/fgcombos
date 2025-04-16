@@ -1,18 +1,60 @@
 <script lang="ts">
-    import Avatar from '@/lib/components/Avatar.svelte';
     import { _ } from 'svelte-i18n';
+    import Avatar from '@/lib/components/Avatar.svelte';
     import type { PageData } from './$types';
     import ComboCard from '@/routes/(home)/ComboCard.svelte';
     import { profileNameOrDefault } from '@/lib/util/text';
+    import ProfileInfoPanel from './ProfileInfoPanel.svelte';
+    import ProfileEditorPanel from './ProfileEditorPanel.svelte';
+    import { getProfileContext } from '@/lib/state/profileContext';
 
     let { data }: { data: PageData } = $props();
+
+    let localProfile = getProfileContext();
+    let editing = $state(false);
+    let hasEditPermissions = $derived(
+        localProfile != null && data.pageProfile.id === localProfile.id
+    );
+
+    function startEditing() {
+        editing = true;
+    }
+
+    function cancelEdits() {
+        editing = false;
+    }
 </script>
 
 <main class="page">
     <div class="primary-area">
-        <Avatar className="fill-space"></Avatar>
-        <h2>{data.profile.profile_name}</h2>
-        <p>{data.profile.description}</p>
+        <Avatar className="avatar-override"></Avatar>
+        
+        {#if editing && localProfile != null}
+            <ProfileEditorPanel
+                uid={localProfile.id}
+                initDescription={localProfile.description}
+                supabase={data.supabase}
+                close={cancelEdits}
+            ></ProfileEditorPanel>
+        {/if}
+
+        {#if !editing}
+            {#if localProfile != null && localProfile.id === data.pageProfile.id}
+                <ProfileInfoPanel
+                    profileName={localProfile.profile_name}
+                    description={localProfile.description}
+                    showEditButton={hasEditPermissions}
+                    {startEditing}
+                ></ProfileInfoPanel>
+            {:else}
+                <ProfileInfoPanel
+                    profileName={data.pageProfile.profile_name}
+                    description={data.pageProfile.description}
+                    showEditButton={hasEditPermissions}
+                    {startEditing}
+                ></ProfileInfoPanel>
+            {/if}
+        {/if}
     </div>
     <div class="secondary-area">
         <h3>{$_('common.combos')}</h3>
@@ -40,7 +82,8 @@
         display: grid;
         grid-template: 'a b' auto / 20% 80%;
         gap: $spacing-8;
-        padding: $spacing-4 $spacing-32;
+        margin-top: $spacing-4;
+        padding: 0 $spacing-32;
 
         @include for-size(phone, down) {
             grid-template:
@@ -48,6 +91,7 @@
                 'b' auto / 100%;
 
             gap: $spacing-4;
+            padding: $spacing-2;
         }
     }
 
@@ -59,7 +103,7 @@
         grid-area: b;
     }
 
-    .page :global(.fill-space) {
+    .page :global(.avatar-override) {
         width: 100% !important;
         height: auto !important;
         aspect-ratio: 1/1 !important;

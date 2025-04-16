@@ -7,14 +7,15 @@
     import UserActionsMenu from './UserActionsMenu.svelte';
     import Avatar from './Avatar.svelte';
     import avatarDefaultUrl from '$lib/assets/avatars/default.jpg';
+    import { getProfileContext } from '../state/profileContext';
 
     type Props = {
         user: User | null;
         supabase: TypedSupabaseClient;
-        profile: DBProfile | null;
     };
 
-    let { user, supabase, profile }: Props = $props();
+    let { user, supabase }: Props = $props();
+    let profile = getProfileContext();
     let signOutPromise: Promise<{ error: AuthError | null }> | undefined = $state();
 
     let showActionsMenu = $state(false);

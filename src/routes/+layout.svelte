@@ -4,9 +4,12 @@
     import { invalidate } from '$app/navigation';
     import Header from '@/lib/components/Header.svelte';
     import { userState } from '@/lib/supabase/store.svelte';
+    import { setProfileContext } from '@/lib/state/profileContext.js';
 
     let { data, children } = $props();
     let { session, supabase } = $derived(data);
+
+    setProfileContext(data.profile);
 
     onMount(() => {
         // Indicates to tests that SvelteKit has finished hydrating
@@ -26,6 +29,6 @@
     });
 </script>
 
-<Header user={data.user} supabase={data.supabase} profile={data.profile}></Header>
+<Header user={data.user} supabase={data.supabase}></Header>
 
 {@render children()}

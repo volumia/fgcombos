@@ -1,9 +1,8 @@
 import type { LayoutServerLoad } from './$types';
 import { error as throwError } from '@sveltejs/kit';
-import type { DBProfile } from '@/lib/supabase/databaseTypes';
 
-export const load: LayoutServerLoad = async ({ params, fetch, locals: { supabase, user } }) => {
-    const { data: profile, error: fetchProfileError } = await supabase
+export const load: LayoutServerLoad = async ({ params, parent, locals: { supabase, user } }) => {
+    const { data: pageProfile, error: fetchProfileError } = await supabase
         .from('profiles')
         .select()
         .eq('profile_name', params.profileName)
@@ -16,11 +15,11 @@ export const load: LayoutServerLoad = async ({ params, fetch, locals: { supabase
     const { data: combos, error: fetchCombosError } = await supabase
         .from('combos')
         .select()
-        .eq('creator_uid', profile.id)
+        .eq('creator_uid', pageProfile.id)
         .limit(5);
 
     return {
-        profile,
+        pageProfile,
         combos
     };
 };
