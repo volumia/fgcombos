@@ -50,6 +50,8 @@ $spacing-20: $mg * 20;
 $spacing-24: $mg * 24;
 $spacing-32: $mg * 32;
 
-// Borders
+// Border radius
+$rounded-none: 0;
 $rounded-sm: 2px;
 $rounded-md: 6px;
+$rounded-full: calc(infinity * 1px);

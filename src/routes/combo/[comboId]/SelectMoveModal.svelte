@@ -99,8 +99,7 @@
                 if (topMostHeaderEl) {
                     topMostHeaderEl.scrollIntoView({ block: 'nearest' });
                 }
-            } 
-            else {
+            } else {
                 const moveEls = moveListElement.querySelectorAll('.move');
                 const moveEl = moveEls[selectedMoveIndex];
                 if (moveEl) {
@@ -126,41 +125,53 @@
                 />
                 <input type="submit" hidden />
             </form>
-            <button class="cancel" onclick={onCancel}><Icon src="/icons/close.svg" /></button>
+            <button class="close" onclick={onCancel}><Icon src="/icons/close.svg" /></button>
         </div>
-        <div class="move-list" bind:this={moveListElement}>
-            {#each filteredMoves as move, i (move.move.id)}
-                {#if sectionHeaders.has(move.move.id)}
-                    <h3 class="section-header">
-                        {$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}
-                    </h3>
-                {/if}
-                <button
-                    class={i == selectedMoveIndex ? 'move selected' : 'move'}
-                    onclick={() => onConfirm(move.move)}
-                    data-testid="add-move"
-                >
-                    <div class="line">
-                        <div>{move.notation}</div>
-                        <div class="name">{move.name}</div>
-                        <div class="filler"></div>
-                        <div class="damage">
-                            <Icon src={'/icons/fist.svg'} />
-                            {move.move.baseDamage}
+        {#if filteredMoves.length > 0}
+            <div class="move-list" bind:this={moveListElement}>
+                {#each filteredMoves as move, i (move.move.id)}
+                    {#if sectionHeaders.has(move.move.id)}
+                        <h3 class="section-header">
+                            {$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}
+                        </h3>
+                    {/if}
+                    <button
+                        class={i == selectedMoveIndex ? 'move selected' : 'move'}
+                        onclick={() => onConfirm(move.move)}
+                        data-testid="add-move"
+                    >
+                        <div class="row">
+                            <div>{move.notation}</div>
+                            <div class="name">{move.name}</div>
+                            <div class="filler"></div>
+                            <div class="damage">
+                                <Icon src={'/icons/fist.svg'} />
+                                {move.move.baseDamage}
+                            </div>
+                            <div class="proration">
+                                <Icon src={'/icons/trend-down.svg'} />
+                                {move.move.proration * 100}%
+                            </div>
                         </div>
-                        <div class="proration">
-                            <Icon src={'/icons/trend-down.svg'} />
-                            {move.move.proration * 100}%
-                        </div>
-                    </div>
-                </button>
-            {/each}
-        </div>
+                    </button>
+                {/each}
+            </div>
+        {:else}
+            <h3 class="no-matches">{$_('edit.selectionModal.noMatches')}</h3>
+        {/if}
+    </div>
+    <div class="center-x">
+        <p class="hint">{$_('edit.selectionModal.hint1')}</p>
+        <p class="hint">{$_('edit.selectionModal.hint2')}</p>
+        <p class="hint">{$_('edit.selectionModal.hint3')}</p>
     </div>
 </div>
 
 <style lang="scss">
     @use '@/style/variables' as *;
+
+    $clr-selected: rgb(0, 219, 183);
+    $clr-selected-border: rgb(2, 42, 35);
 
     button {
         margin: $spacing-1 0;
@@ -179,19 +190,23 @@
 
         font-size: 1em;
 
-        border: 1px solid black;
-        background-color: gray;
+        border: 1px solid $clr-mono0;
+        border-radius: $rounded-md;
+        background-color: $clr-mono20;
     }
 
     .toolbar {
         display: flex;
+        align-items: center;
+        gap: $spacing-1;
+
         width: 100%;
         height: 2em;
-        align-items: center;
 
-        .cancel {
-            height: 100%;
-            aspect-ratio: 1/1;
+        .close {
+            width: 2em;
+            height: 2em;
+            border-radius: $rounded-full;
         }
 
         .searchForm {
@@ -206,8 +221,18 @@
     }
 
     .move-list {
+        margin: $spacing-4 0;
         max-height: $size-48;
         overflow-y: scroll;
+    }
+
+    .section-header {
+        color: $clr-mono90;
+    }
+
+    .no-matches {
+        width: fit-content;
+        margin: $spacing-4 auto;
     }
 
     button.move {
@@ -216,12 +241,10 @@
         width: 100%;
         text-align: start;
 
-        &.selected {
-            border: 2px solid rgb(0, 77, 64);
-            background-color: rgb(0, 219, 183);
-        }
+        background-color: $clr-mono10;
+        color: $clr-mono90;
 
-        .line {
+        .row {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -229,7 +252,7 @@
 
             .name {
                 font-size: 0.8em;
-                color: rgb(73, 73, 73);
+                color: $clr-mono80;
             }
 
             .filler {
@@ -240,8 +263,36 @@
             .proration {
                 min-width: 6ch;
                 font-size: 0.8em;
-                color: rgb(73, 73, 73);
+                color: $clr-mono80;
             }
         }
+
+        &.selected {
+            color: $clr-mono10;
+            background-color: $clr-selected;
+            border-color: $clr-selected-border;
+
+            .row {
+                .name {
+                    color: $clr-mono10;
+                }
+
+                .damage,
+                .proration {
+                    color: $clr-mono20;
+                }
+            }
+        }
+    }
+
+    .center-x {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hint {
+        font-size: 0.8em;
+        color: $clr-mono70;
     }
 </style>

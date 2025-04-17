@@ -28,8 +28,10 @@ button,
 
     color: $clr-mono0;
     background-color: $clr-mono90;
-    text-decoration: none;
 
+    text-decoration: none;
+    text-align: center;
+    
     &:hover {
         background-color: $clr-mono80;
     }
@@ -72,12 +74,18 @@ input[type='password'],
 input[type='email'],
 input[type='search'],
 input[type='url'] {
-    background-color: $clr-mono100;
+    color: $clr-mono80;
+    background-color: $clr-mono20;
     border: 1px solid $clr-mono40;
     border-radius: 6px;
 
     &:disabled {
-        background-color: $clr-mono70;
+        color: $clr-mono60;
+        background-color: $clr-mono10;
+    }
+
+    &::placeholder {
+        color: $clr-mono60;
     }
 }
 

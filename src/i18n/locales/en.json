@@ -73,6 +73,13 @@
         "moveTypes": {
             "normal": "Normals",
             "super": "Super Art"
+        },
+        "openModalHint": "or press [a]",
+        "selectionModal": {
+            "noMatches": "No matching moves found",
+            "hint1": "press ↑ and ↓ to navigate list",
+            "hint2": "press [enter]/[return] to select a move",
+            "hint3": "press [esc] to close"
         }
     },
     "games": {

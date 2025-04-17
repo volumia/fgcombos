@@ -258,6 +258,7 @@
         ></SelectMoveModal>
     {:else}
         <button onclick={openAddModal} data-testid="open-add-modal">+ {$_('edit.addMove')}</button>
+        <p class="hint">{$_('edit.openModalHint')}</p>
     {/if}
 {/if}
 
@@ -429,5 +430,10 @@
         width: fit-content;
         margin-inline-start: auto;
         margin-inline-end: 0;
+    }
+
+    .hint {
+        font-size: 0.8em;
+        color: $clr-mono70;
     }
 </style>
