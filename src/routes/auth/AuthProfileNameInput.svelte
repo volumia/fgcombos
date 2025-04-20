@@ -9,6 +9,7 @@ Checks username validity on the client-side and server-side, and renders any val
     import clsx from 'clsx';
     import { debounce } from 'lodash-es';
     import { ProfileNameChecker } from './ProfileNameChecker.svelte';
+    import Icon from '@/lib/components/Icon.svelte';
 
     type Props = {
         name: string;
@@ -94,7 +95,10 @@ Checks username validity on the client-side and server-side, and renders any val
         <p class="msg-error text-sm">{$_('auth.profileNameClaimed')}</p>
     {/if}
     {#if nameChecker.valid && nameChecker.performedAllChecks}
-        <p class="msg-valid text-sm">{$_('auth.profileNameUnclaimed')}</p>
+        <p class="msg-valid text-sm">
+            <Icon src="/icons/check-circle-outline.svg"></Icon>
+            {$_('auth.profileNameUnclaimed')}
+        </p>
     {/if}
     <div class="margin-block"></div>
 </div>

@@ -49,7 +49,6 @@
 
     function addMove(move: Move) {
         moves.value.push(move);
-        isSelectModalOpen = false;
     }
 
     function enterEditMode() {
@@ -193,9 +192,17 @@
             {/if}
             <div class="user-name-parent">
                 {#if data.combo.creator_uid}
-                    <a href={`/u/${data.combo.creator_profile_name}`}>{$_(`common.byUser`, { values: { name: profileNameOrDefault(data.combo.creator_profile_name) } })}</a>
+                    <a href={`/u/${data.combo.creator_profile_name}`}
+                        >{$_(`common.byUser`, {
+                            values: { name: profileNameOrDefault(data.combo.creator_profile_name) }
+                        })}</a
+                    >
                 {:else}
-                    <span>{$_(`common.byUser`, { values: { name: profileNameOrDefault(data.combo.creator_profile_name) } })}</span>    
+                    <span
+                        >{$_(`common.byUser`, {
+                            values: { name: profileNameOrDefault(data.combo.creator_profile_name) }
+                        })}</span
+                    >
                 {/if}
             </div>
         </div>
@@ -251,14 +258,16 @@
 
 {#if isEditing}
     {#if isSelectModalOpen}
-        <SelectMoveModal
-            moves={namedMoveset}
-            onConfirm={addMove}
-            onCancel={() => (isSelectModalOpen = false)}
+        <SelectMoveModal moves={namedMoveset} onConfirm={addMove} bind:isOpen={isSelectModalOpen}
         ></SelectMoveModal>
     {:else}
-        <button onclick={openAddModal} data-testid="open-add-modal">+ {$_('edit.addMove')}</button>
-        <p class="hint">{$_('edit.openModalHint')}</p>
+        <div class="row">
+            <button onclick={openAddModal} data-testid="open-add-modal">
+                <Icon src="/icons/plus.svg"></Icon>
+                {$_('edit.addMove')}
+            </button>
+            <p class="hint">{$_('edit.openModalHint')}</p>
+        </div>
     {/if}
 {/if}
 
@@ -430,6 +439,13 @@
         width: fit-content;
         margin-inline-start: auto;
         margin-inline-end: 0;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: $spacing-2;
     }
 
     .hint {

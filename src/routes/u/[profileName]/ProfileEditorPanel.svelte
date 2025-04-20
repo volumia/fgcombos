@@ -37,6 +37,7 @@
 </script>
 
 <div class="root">
+    <label for="description">{$_('user.yourDescription')}</label>
     <input
         type="text"
         id="description"
@@ -54,7 +55,13 @@
 </div>
 
 <style lang="scss">
+    @use '@/style/variables' as *;
+    
     .root {
         width: 100%;
+    }
+
+    input {
+        margin-bottom: $spacing-4;
     }
 </style>

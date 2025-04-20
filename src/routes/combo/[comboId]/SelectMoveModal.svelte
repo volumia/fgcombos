@@ -4,6 +4,7 @@
     import Fuse from 'fuse.js';
     import type { Move } from '@/moveTypes';
     import Icon from '@/lib/components/Icon.svelte';
+    import { Modal } from 'svelte-html-modal';
 
     // A wrapper on top of Move that includes name and notation.
     // It's necessary to have this data on one type in order to
@@ -15,12 +16,13 @@
     };
 
     type Props = {
+        isOpen: boolean;
         moves: NamedMove[];
-        onConfirm: (move: Move) => void;
-        onCancel: () => void;
+        onConfirm?: (move: Move) => void;
+        onCancel?: () => void;
     };
 
-    let { moves, onConfirm, onCancel }: Props = $props();
+    let { isOpen = $bindable(false), moves, onConfirm, onCancel }: Props = $props();
 
     let searchQuery: string = $state('');
     const fuse = new Fuse(moves, {
@@ -33,20 +35,24 @@
     let moveListElement: Element | undefined = $state(undefined);
     let sectionHeaders = $state(new SvelteMap<string, string | undefined>());
 
+    function closeAndCancel() {
+        isOpen = false;
+        onCancel?.();
+    }
+
+    function closeAndConfirm() {
+        isOpen = false;
+        if (filteredMoves.length > 0) {
+            onConfirm?.(filteredMoves[selectedMoveIndex].move);
+        }
+    }
+
     function getFilteredMoves(query: string): NamedMove[] {
         if (isSearchEmpty) {
             return moves;
         } else {
             const result = fuse.search<NamedMove>(query);
             return result.map((r) => r.item);
-        }
-    }
-
-    function onSearchSubmit(e: SubmitEvent) {
-        e.preventDefault();
-
-        if (filteredMoves.length > 0) {
-            onConfirm(filteredMoves[selectedMoveIndex].move);
         }
     }
 
@@ -60,7 +66,10 @@
             e.preventDefault();
         }
         if (e.code === 'Escape') {
-            onCancel();
+            closeAndCancel();
+        }
+        if (e.code === 'Enter') {
+            closeAndConfirm();
         }
         if (selectedMoveIndex >= filteredMoves.length) {
             selectedMoveIndex = filteredMoves.length - 1;
@@ -110,10 +119,10 @@
     });
 </script>
 
-<div class="modal">
-    <div onkeydown={onModalKeyPress} role="presentation">
-        <div class="toolbar">
-            <form class="searchForm" onsubmit={onSearchSubmit}>
+<div class="modal-wrapper" onkeydown={onModalKeyPress} role="presentation">
+    <Modal bind:isOpen closeOnBackdropClick={true} enableTransitions={false}>
+        <div class="content-area">
+            <div class="toolbar">
                 <input
                     type="search"
                     id="search"
@@ -123,48 +132,46 @@
                     use:focusElement
                     bind:value={searchQuery}
                 />
-                <input type="submit" hidden />
-            </form>
-            <button class="close" onclick={onCancel}><Icon src="/icons/close.svg" /></button>
-        </div>
-        {#if filteredMoves.length > 0}
-            <div class="move-list" bind:this={moveListElement}>
-                {#each filteredMoves as move, i (move.move.id)}
-                    {#if sectionHeaders.has(move.move.id)}
-                        <h3 class="section-header">
-                            {$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}
-                        </h3>
-                    {/if}
-                    <button
-                        class={i == selectedMoveIndex ? 'move selected' : 'move'}
-                        onclick={() => onConfirm(move.move)}
-                        data-testid="add-move"
-                    >
-                        <div class="row">
-                            <div>{move.notation}</div>
-                            <div class="name">{move.name}</div>
-                            <div class="filler"></div>
-                            <div class="damage">
-                                <Icon src={'/icons/fist.svg'} />
-                                {move.move.baseDamage}
-                            </div>
-                            <div class="proration">
-                                <Icon src={'/icons/trend-down.svg'} />
-                                {move.move.proration * 100}%
-                            </div>
-                        </div>
-                    </button>
-                {/each}
             </div>
-        {:else}
-            <h3 class="no-matches">{$_('edit.selectionModal.noMatches')}</h3>
-        {/if}
-    </div>
-    <div class="center-x">
-        <p class="hint">{$_('edit.selectionModal.hint1')}</p>
-        <p class="hint">{$_('edit.selectionModal.hint2')}</p>
-        <p class="hint">{$_('edit.selectionModal.hint3')}</p>
-    </div>
+            {#if filteredMoves.length > 0}
+                <div class="move-list" bind:this={moveListElement}>
+                    {#each filteredMoves as move, i (move.move.id)}
+                        {#if sectionHeaders.has(move.move.id)}
+                            <h3 class="section-header">
+                                {$_(`edit.moveTypes.${sectionHeaders.get(move.move.id) as string}`)}
+                            </h3>
+                        {/if}
+                        <button
+                            class={i == selectedMoveIndex ? 'move selected' : 'move'}
+                            onclick={() => onConfirm?.(move.move)}
+                            data-testid="add-move"
+                        >
+                            <div class="row">
+                                <div>{move.notation}</div>
+                                <div class="name">{move.name}</div>
+                                <div class="filler"></div>
+                                <div class="damage">
+                                    <Icon src={'/icons/fist.svg'} />
+                                    {move.move.baseDamage}
+                                </div>
+                                <div class="proration">
+                                    <Icon src={'/icons/trend-down.svg'} />
+                                    {move.move.proration * 100}%
+                                </div>
+                            </div>
+                        </button>
+                    {/each}
+                </div>
+            {:else}
+                <h3 class="no-matches">{$_('edit.selectionModal.noMatches')}</h3>
+            {/if}
+        </div>
+        <div class="center-x">
+            <p class="hint">{$_('edit.selectionModal.hint1')}</p>
+            <p class="hint">{$_('edit.selectionModal.hint2')}</p>
+            <p class="hint">{$_('edit.selectionModal.hint3')}</p>
+        </div>
+    </Modal>
 </div>
 
 <style lang="scss">
@@ -179,20 +186,32 @@
         font-size: 1em;
     }
 
-    .modal {
+    .modal-wrapper > :global(dialog) {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
 
         min-width: $size-48;
-        padding: $spacing-1;
 
         font-size: 1em;
 
+        color: $clr-mono90;
+        background-color: transparent;
+        border: none;
+    }
+
+    .modal-wrapper > :global(dialog::backdrop) {
+        backdrop-filter: blur(8px) brightness(0.5);
+    }
+
+    .content-area {
+        padding: $spacing-1;
+        margin-bottom: $spacing-4;
+        
+        background-color: $clr-mono20;
         border: 1px solid $clr-mono0;
         border-radius: $rounded-md;
-        background-color: $clr-mono20;
     }
 
     .toolbar {
@@ -209,14 +228,10 @@
             border-radius: $rounded-full;
         }
 
-        .searchForm {
+        input {
+            width: 100%;
             height: 100%;
             flex-grow: 1;
-
-            input {
-                width: 100%;
-                height: 100%;
-            }
         }
     }
 
@@ -250,6 +265,7 @@
             align-items: center;
             gap: 0.5ch;
 
+
             .name {
                 font-size: 0.8em;
                 color: $clr-mono80;
@@ -268,9 +284,10 @@
         }
 
         &.selected {
-            color: $clr-mono10;
+            color: $clr-mono0;
             background-color: $clr-selected;
             border-color: $clr-selected-border;
+            font-weight: 600;
 
             .row {
                 .name {
@@ -279,7 +296,7 @@
 
                 .damage,
                 .proration {
-                    color: $clr-mono20;
+                    color: $clr-mono10;
                 }
             }
         }
@@ -294,5 +311,6 @@
     .hint {
         font-size: 0.8em;
         color: $clr-mono70;
+        user-select: none;
     }
 </style>

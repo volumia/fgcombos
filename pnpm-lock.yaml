@@ -23,6 +23,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+      svelte-html-modal:
+        specifier: ^3.1.0
+        version: 3.1.0(svelte@5.16.0)
       svelte-i18n:
         specifier: ^4.0.1
         version: 4.0.1(svelte@5.16.0)
@@ -1706,6 +1709,11 @@ packages:
     peerDependenciesMeta:
       svelte:
         optional: true
+
+  svelte-html-modal@3.1.0:
+    resolution: {integrity: sha512-ONix9iD7if1uC3EPEjrs44dIIoNVpkGCt9PUHxYhVn0Stwzaj95US+RC5XcL2US3LIowlJdHvOHOHGKUK4zqoQ==}
+    peerDependencies:
+      svelte: ^5.0.2
 
   svelte-i18n@4.0.1:
     resolution: {integrity: sha512-jaykGlGT5PUaaq04JWbJREvivlCnALtT+m87Kbm0fxyYHynkQaxQMnIKHLm2WeIuBRoljzwgyvz0Z6/CMwfdmQ==}
@@ -3491,6 +3499,10 @@ snapshots:
       postcss: 8.4.40
       postcss-scss: 4.0.9(postcss@8.4.40)
     optionalDependencies:
+      svelte: 5.16.0
+
+  svelte-html-modal@3.1.0(svelte@5.16.0):
+    dependencies:
       svelte: 5.16.0
 
   svelte-i18n@4.0.1(svelte@5.16.0):
