@@ -1,8 +1,8 @@
 <script lang="ts">
     import type { AuthError, User } from '@supabase/supabase-js';
     import { _ } from 'svelte-i18n';
-    import type { DBProfile, TypedSupabaseClient } from '../supabase/databaseTypes';
-    import { goto } from '$app/navigation';
+    import type { TypedSupabaseClient } from '../supabase/databaseTypes';
+    import { goto, invalidateAll } from '$app/navigation';
     import Icon from '@/lib/components/Icon.svelte';
     import UserActionsMenu from './UserActionsMenu.svelte';
     import Avatar from './Avatar.svelte';
@@ -31,6 +31,8 @@
 
             signOutPromise = undefined;
             showActionsMenu = false;
+
+            invalidateAll();
         }
     }
 

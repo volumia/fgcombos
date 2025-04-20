@@ -336,8 +336,8 @@
 
         .portrait {
             display: block;
-            width: $sg * 32;
-            height: $sg * 32;
+            width: $size-base * 32;
+            height: $size-base * 32;
             object-fit: cover;
         }
 

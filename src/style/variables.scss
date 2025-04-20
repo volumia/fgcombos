@@ -4,6 +4,9 @@ $clr-blue30: rgb(0, 0, 204);
 $clr-red100: rgb(255, 244, 245);
 $clr-red90: rgb(250, 218, 220);
 $clr-red50: rgb(253, 65, 81);
+$clr-red70: rgb(252, 141, 152);
+
+$clr-green70: rgb(163, 202, 115);
 
 $clr-primary80: rgb(115, 97, 249);
 
@@ -20,35 +23,44 @@ $clr-mono10:  rgb(25, 25, 25);
 $clr-mono0:   rgb(0, 0, 0);
 
 // Sizing and spacing
-$sg: 8px;
-$size-1: $sg * 1;
-$size-2: $sg * 2;
-$size-3: $sg * 3;
-$size-4: $sg * 4;
-$size-5: $sg * 5;
-$size-6: $sg * 6;
-$size-8: $sg * 8;
-$size-10: $sg * 10;
-$size-12: $sg * 12;
-$size-16: $sg * 16;
-$size-20: $sg * 20;
-$size-24: $sg * 24;
-$size-32: $sg * 32;
-$size-48: $sg * 48;
-$size-64: $sg * 64;
+$size-base: 8px;
+$size-1: $size-base * 1;
+$size-2: $size-base * 2;
+$size-3: $size-base * 3;
+$size-4: $size-base * 4;
+$size-5: $size-base * 5;
+$size-6: $size-base * 6;
+$size-8: $size-base * 8;
+$size-10: $size-base * 10;
+$size-12: $size-base * 12;
+$size-16: $size-base * 16;
+$size-20: $size-base * 20;
+$size-24: $size-base * 24;
+$size-32: $size-base * 32;
+$size-48: $size-base * 48;
+$size-64: $size-base * 64;
 
-$mg: 0.25em;
-$spacing-1: $mg * 1;
-$spacing-2: $mg * 2;
-$spacing-3: $mg * 3;
-$spacing-4: $mg * 4;
-$spacing-8: $mg * 8;
-$spacing-10: $mg * 10;
-$spacing-12: $mg * 12;
-$spacing-16: $mg * 16;
-$spacing-20: $mg * 20;
-$spacing-24: $mg * 24;
-$spacing-32: $mg * 32;
+$spacing-base: 0.25em;
+$spacing-1: $spacing-base * 1;
+$spacing-2: $spacing-base * 2;
+$spacing-3: $spacing-base * 3;
+$spacing-4: $spacing-base * 4;
+$spacing-8: $spacing-base * 8;
+$spacing-10: $spacing-base * 10;
+$spacing-12: $spacing-base * 12;
+$spacing-16: $spacing-base * 16;
+$spacing-20: $spacing-base * 20;
+$spacing-24: $spacing-base * 24;
+$spacing-32: $spacing-base * 32;
+
+// Typography
+$text-xs: 0.75rem;
+$text-sm: 0.875rem;
+$text-base: 1rem;
+$text-lg: 1.125rem;
+$text-xl: 1.25rem;
+$text-2xl: 1.5rem;
+$text-3xl: 1.875rem;
 
 // Border radius
 $rounded-none: 0;

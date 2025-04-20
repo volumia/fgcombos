@@ -8,30 +8,25 @@ main {
     background-color: $clr-mono20;
 }
 
-input[type="email"], input[type="password"] {
+input[type='text'],
+input[type='email'],
+input[type='password'] {
     width: 100%;
     height: $size-4;
 
-    margin-bottom: $spacing-2;
+    margin-bottom: $spacing-4;
     padding: $spacing-2;
-    
-    background-color: $clr-mono100;
 
-    &:placeholder-shown {
-        background-color: $clr-mono90;
-    }
-
-    &::placeholder {
-        color: $clr-mono50;
-    }
-
-    &:invalid:not(:placeholder-shown) {
-        border-color: $clr-red50;
-        background-color: $clr-mono100;
+    &:invalid:not(:placeholder-shown):not(.val-checking) {
+        border-color: $clr-red70;
 
         &::placeholder {
             color: $clr-red90;
         }
+    }
+
+    &.no-margin {
+        margin: 0;
     }
 }
 
@@ -45,4 +40,22 @@ button.form-action {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.msg-error {
+    margin: $spacing-1 0;
+    color: $clr-red70;
+}
+
+.msg-valid {
+    margin: $spacing-1 0;
+    color: $clr-green70;
+}
+
+.text-sm { 
+    font-size: $text-sm;
+}
+
+.margin-block {
+    margin-bottom: $spacing-4;
 }

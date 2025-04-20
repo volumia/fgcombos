@@ -140,6 +140,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_profile_name_valid: {
+        Args: {
+          name: string
+          minlength?: number
+          maxlength?: number
+          alphabet?: string
+        }
+        Returns: boolean
+      }
       nanoid: {
         Args: {
           size?: number
