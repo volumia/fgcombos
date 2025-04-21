@@ -155,12 +155,18 @@
 {#if data.hasEditPermissions}
     <div class="mode-area">
         {#if isEditing}
-            <div class="mode-indicator">{$_('edit.editing')}</div>
-            <button onclick={cancelEdits}>{$_('common.cancel')}</button>
-            <button onclick={confirmEdits}>{$_('common.confirm')}</button>
+            <div class="mode-indicator">
+                <Icon src="/icons/pencil.svg" size={0.8}></Icon>
+                {$_('edit.editing')}
+            </div>
+            <button class="outlined small" onclick={cancelEdits}>{$_('common.cancelChanges')}</button>
+            <button class="small" onclick={confirmEdits}>{$_('common.confirmChanges')}</button>
         {:else}
-            <div class="mode-indicator">{$_('edit.viewing')}</div>
-            <button onclick={enterEditMode}>{$_('common.edit')}</button>
+            <div class="mode-indicator">
+                <Icon src="/icons/eye.svg" size={0.8}></Icon>
+                {$_('edit.viewing')}
+            </div>
+            <button class="small" onclick={enterEditMode}>{$_('common.edit')}</button>
         {/if}
     </div>
 {/if}
@@ -257,10 +263,10 @@
 </div>
 
 {#if isEditing}
-    {#if isSelectModalOpen}
-        <SelectMoveModal moves={namedMoveset} onConfirm={addMove} bind:isOpen={isSelectModalOpen}
-        ></SelectMoveModal>
-    {:else}
+    <SelectMoveModal moves={namedMoveset} onConfirm={addMove} bind:isOpen={isSelectModalOpen}
+    ></SelectMoveModal>
+
+    {#if !isSelectModalOpen}
         <div class="row">
             <button onclick={openAddModal} data-testid="open-add-modal">
                 <Icon src="/icons/plus.svg"></Icon>
@@ -283,19 +289,26 @@
     }
 
     .mode-area {
-        vertical-align: middle;
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
+        gap: $spacing-2;
 
         .mode-indicator {
-            display: inline-block;
-            width: $size-12;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: $spacing-2;
+
+            width: fit-content;
             height: 2em;
+            padding: $spacing-2;
+            margin-inline-end: $spacing-2;
 
             background-color: $clr-mono10;
             border: 1px solid $clr-mono20;
-            border-radius: 1000px;
-
-            text-align: center;
-            vertical-align: middle;
+            border-radius: $rounded-md;
         }
     }
 

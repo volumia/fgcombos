@@ -21,10 +21,10 @@ button,
 .as-button {
     margin-top: $spacing-2;
     margin-bottom: $spacing-2;
-    padding: $spacing-1 $spacing-2;
+    padding: $spacing-1 $spacing-3;
 
-    border: 1px solid $clr-mono40;
-    border-radius: 6px;
+    border: none;
+    border-radius: 4px;
 
     color: $clr-mono0;
     background-color: $clr-mono90;
@@ -43,16 +43,49 @@ button,
     &:disabled {
         background-color: $clr-mono70;
     }
-}
 
-button.content-only {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0 $spacing-1;
+    &.outlined {
+        background: none;
+        border: 1px solid $clr-mono90;
+        color: $clr-mono90;
 
-    &:hover {
-        cursor: pointer;
+        &:hover {
+            background-color: $clr-mono20;
+        }
+
+        &:active {
+            background-color: $clr-mono30;
+        }
+    }
+
+    &.text-only {
+        color: $clr-mono90;
+        background: none;
+    
+        &:hover {
+            cursor: pointer;
+            background-color: $clr-mono20;
+        }
+
+        &:active {
+            background-color: $clr-mono30;
+        }
+    }
+
+    &.content-only {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0 $spacing-1;
+    
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+
+    &.small {
+        font-size: $text-sm;
     }
 }
 

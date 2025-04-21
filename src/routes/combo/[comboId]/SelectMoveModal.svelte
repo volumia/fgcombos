@@ -83,8 +83,16 @@
         el.focus();
     }
 
+    // Reset selection and search state when opening the modal.
     $effect(() => {
-        filteredMoves; // Re-run this effect when filteredMoves updates
+        if (isOpen) {
+            selectedMoveIndex = 0;
+            searchQuery = '';
+        }
+    });
+
+    // Reset selection state and construct section headers whenever filteredMoves changes.
+    $effect(() => {
         selectedMoveIndex = 0; // Select the first move in the list.
 
         sectionHeaders.clear();
@@ -97,12 +105,12 @@
         });
     });
 
-    // Scroll the selected (not the same as page focus) move into view when navigating with arrow keys.
+    // Scroll (not the same as page focus) the selected move into view when navigating with arrow keys.
     $effect(() => {
         if (moveListElement) {
             // Special case for the first move on the list.
             // When scrolling to the first move, scroll the header above it into view instead,
-            // so it isn't lost during scrolling.
+            // as it wouldn't fit into the view otherwise.
             if (selectedMoveIndex === 0) {
                 const topMostHeaderEl = moveListElement.querySelector('.section-header');
                 if (topMostHeaderEl) {
@@ -208,7 +216,7 @@
     .content-area {
         padding: $spacing-1;
         margin-bottom: $spacing-4;
-        
+
         background-color: $clr-mono20;
         border: 1px solid $clr-mono0;
         border-radius: $rounded-md;
@@ -264,7 +272,6 @@
             flex-direction: row;
             align-items: center;
             gap: 0.5ch;
-
 
             .name {
                 font-size: 0.8em;

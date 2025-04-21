@@ -2,6 +2,8 @@
     "common": {
         "confirm": "Confirm",
         "cancel": "Cancel",
+        "confirmChanges": "Confirm changes",
+        "cancelChanges": "Cancel changes",
         "edit": "Edit",
         "save": "Save",
         "create": "Create",
@@ -10,7 +12,8 @@
         "byUser": "By {name}",
         "likes": "{likes} likes",
         "damageNumber": "{dmg} DMG",
-        "combos": "Combos"
+        "combos": "Combos",
+        "title": "Title"
     },
     "nav": {
         "home": "Home"
