@@ -1,0 +1,8 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "fgcombos"
+compatibility_date = "2025-04-21"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+#*** DEV ***
+[dev]
+ip = "0.0.0.0"  # all interfaces
