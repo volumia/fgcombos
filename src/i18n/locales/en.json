@@ -61,7 +61,8 @@
             "selectGameLabel": "Select a game",
             "selectGamePlaceholder": "No game selected",
             "selectCharacterLabel": "Select a character",
-            "selectCharacterPlaceholder": "No character selected"
+            "selectCharacterPlaceholder": "No character selected",
+            "mustBeSignedIn": "You must be signed in in order to create combos"
         },
         "browseSection": {
             "title": "Browse combos",

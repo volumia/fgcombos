@@ -50,6 +50,8 @@
         }
     });
 
+    let isUserSignedIn = $derived(data.user != null);
+
     let canCreateCombo: boolean = $derived(
         selectedGame != undefined && selectedCharacter != undefined
     );
@@ -59,7 +61,7 @@
             return 'common.loading';
         } else if (selectedCharacter == undefined) {
             return 'home.createSection.selectCharacterPlaceholder';
-        } 
+        }
 
         return 'common.loading';
     });
@@ -85,31 +87,36 @@
 <div class="division">
     <section class="create-form">
         <h2>{$_('home.createSection.title')}</h2>
+        
+        {#if isUserSignedIn}
+            <label for="select-game">{$_('home.createSection.selectGameLabel')}</label>
+            <Dropdown
+                options={gameOptions}
+                bind:value={selectedGame}
+                placeholder={$_('home.createSection.selectGamePlaceholder')}
+            ></Dropdown>
 
-        <label for="select-game">{$_('home.createSection.selectGameLabel')}</label>
-        <Dropdown
-            options={gameOptions}
-            bind:value={selectedGame}
-            placeholder={$_('home.createSection.selectGamePlaceholder')}
-        ></Dropdown>
+            <label for="select-character">{$_('home.createSection.selectCharacterLabel')}</label>
+            <Dropdown
+                options={characterOptions}
+                bind:value={selectedCharacter}
+                disabled={characterOptions.length === 0}
+                placeholder={characterDropdownPlaceholder}
+            ></Dropdown>
 
-        <label for="select-character">{$_('home.createSection.selectCharacterLabel')}</label>
-        <Dropdown
-            options={characterOptions}
-            bind:value={selectedCharacter}
-            disabled={characterOptions.length === 0}
-            placeholder={characterDropdownPlaceholder}
-        ></Dropdown>
-
-        {#if waitingForComboCreation}
-            <button onclick={createComboWithSettings} disabled>
-                {$_('common.pending')}
-            </button>
+            {#if waitingForComboCreation}
+                <button onclick={createComboWithSettings} disabled>
+                    {$_('common.pending')}
+                </button>
+            {:else}
+                <button onclick={createComboWithSettings} disabled={!canCreateCombo}>
+                    {$_('common.create')}
+                </button>
+            {/if}
         {:else}
-            <button onclick={createComboWithSettings} disabled={!canCreateCombo}>
-                {$_('common.create')}
-            </button>
+            <p>{$_('home.createSection.mustBeSignedIn')}</p>
         {/if}
+
     </section>
     <section class="browse">
         <h2>{$_('home.browseSection.title')}</h2>
@@ -133,7 +140,7 @@
 
     .division {
         display: grid;
-        grid-template: 'a b' auto / 0.3fr 1fr;
+        grid-template: 'a b' auto / 30% 70%;
         gap: $spacing-4;
 
         @include for-size(phone, down) {
