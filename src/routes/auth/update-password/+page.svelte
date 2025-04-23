@@ -1,32 +1,50 @@
 <script lang="ts">
-    import { _ } from 'svelte-i18n';
     import type { PageData } from './$types';
-    import { getCheckerCssClass, ProfileNameChecker } from '../ProfileNameChecker.svelte';
-    import { authConstants } from '../authConstants';
+    import { _ } from 'svelte-i18n';
     import AuthInput from '../AuthInput.svelte';
-    import AuthProfileNameInput from '../AuthProfileNameInput.svelte';
+    import { goto } from '$app/navigation';
 
     let { data }: { data: PageData } = $props();
-
-    let profileNameChecker = $state(new ProfileNameChecker(data.supabase));
 
     let password1: string | undefined = $state();
     let password2: string | undefined = $state();
     let password1Input: AuthInput | undefined = $state();
     let password2Input: AuthInput | undefined = $state();
+    let sentUpdateRequest: boolean = $state(false);
 
     function preventDefaultValidationPopup(e: Event) {
-        // Prevents the default HTML validation popup when submitting an invalidated form 
+        // Prevents the default HTML validation popup when submitting an invalidated form
         // (assuming e is from an 'invalid' event, naturally)
         // Client-side validation still occurs.
         e.preventDefault();
     }
 
+    async function updatePassword(e: Event) {
+        e.preventDefault();
+        if (password1 != undefined && !sentUpdateRequest) {
+            sentUpdateRequest = true;
+
+            const { error } = await data.supabase.auth.updateUser({
+                password: password1
+            });
+
+            if (error) {
+                goto('/auth/error');
+            } else {
+                goto('/');
+            }
+        }
+    }
+
     function onFormMounted(form: HTMLFormElement) {
         $effect(() => {
             form.addEventListener('invalid', preventDefaultValidationPopup, true);
+            form.addEventListener('submit', updatePassword);
 
-            return () => form.removeEventListener('invalid', preventDefaultValidationPopup, true);
+            return () => {
+                form.removeEventListener('invalid', preventDefaultValidationPopup, true);
+                form.removeEventListener('submit', updatePassword);
+            };
         });
     }
 
@@ -42,29 +60,9 @@
 </script>
 
 <main>
-    <h1>{$_('auth.signUpGreeting')}</h1>
+    <h1>{$_('auth.updatePasswordGreeting')}</h1>
 
-    <form method="POST" action="?/signUp" use:onFormMounted>
-        <AuthProfileNameInput
-            name="profileName"
-            id="profileName"
-            label={$_('auth.profileName')}
-            className={getCheckerCssClass(profileNameChecker)}
-            placeholder={$_('auth.profileNamePlaceholder')}
-            minLength={authConstants.nameMinLength}
-            maxLength={authConstants.nameMaxLength}
-            pattern={authConstants.nameAllowedPattern}
-            nameChecker={profileNameChecker}
-        ></AuthProfileNameInput>
-
-        <AuthInput
-            name="email"
-            type="email"
-            id="email"
-            label={$_('auth.email')}
-            placeholder={$_('auth.emailPlaceholder')}
-        ></AuthInput>
-
+    <form use:onFormMounted>
         <AuthInput
             name="password"
             type="password"
@@ -85,7 +83,7 @@
             bind:this={password2Input}
         ></AuthInput>
 
-        <div><button class="form-action">{$_('auth.signUp')}</button></div>
+        <div><button class="form-action">{$_('auth.updatePassword')}</button></div>
     </form>
 </main>
 

@@ -52,7 +52,7 @@
         <a href="/auth/sign-in">{$_('auth.signIn')}</a>
     {/if}
 
-    {#if showActionsMenu && profile}
+    {#if showActionsMenu && profile && user}
         <UserActionsMenu
             userName={profile.profile_name}
             avatarUrl={avatarDefaultUrl}
