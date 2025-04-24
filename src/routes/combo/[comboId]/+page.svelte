@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { PageData } from './$types';
-    import { _, locale, addMessages } from 'svelte-i18n';
+    import { _, locale, addMessages, t } from 'svelte-i18n';
     import Icon from '@/lib/components/Icon.svelte';
     import type { Move, ComboSnapshot, ComboResult } from '@/moveTypes';
     import SelectMoveModal from './SelectMoveModal.svelte';
@@ -32,8 +32,10 @@
 
     let inEditMode: boolean = $state(false);
     let isEditing = $derived(data.hasEditPermissions && inEditMode);
+
     let publishStatus: string | undefined = $state();
     let clearPublishStatusTimeoutId: number | undefined = $state();
+    let publishingChanges: boolean = $state(false);
 
     function getTranslatedMoveName(id: string) {
         return $_(`characters.${cid}.moves.${id}.name`);
@@ -65,12 +67,12 @@
         moves.revert();
     }
 
-    async function confirmEdits() {
-        inEditMode = false;
+    async function publishEdits() {
         comboTitle.confirm();
         moves.confirm();
 
         const moveIds = movesToMoveIds(moves.value);
+        publishingChanges = true;
         publishStatus = $_('edit.publishing');
 
         const { error } = await data.supabase
@@ -91,6 +93,8 @@
                 7000
             );
         }
+
+        publishingChanges = false;
     }
 
     function createMapFromMoves(moves: Move[]): SvelteMap<string, Move> {
@@ -148,10 +152,6 @@
 
 <svelte:window onkeydown={handleKeyDown} />
 
-{#if publishStatus}
-    <h3>{publishStatus}</h3>
-{/if}
-
 {#if data.hasEditPermissions}
     <div class="mode-area">
         {#if isEditing}
@@ -159,8 +159,18 @@
                 <Icon src="/icons/pencil.svg" size={0.8}></Icon>
                 {$_('edit.editing')}
             </div>
-            <button class="outlined small" onclick={cancelEdits}>{$_('common.cancelChanges')}</button>
-            <button class="small" onclick={confirmEdits}>{$_('common.confirmChanges')}</button>
+            <button class="outlined small" onclick={cancelEdits} disabled={publishingChanges}>
+                {$_('common.cancelChanges')}
+            </button>
+            <button class="small" onclick={publishEdits} disabled={publishingChanges}>
+                {$_('common.publishChanges')}
+            </button>
+
+            <div class="filler"></div>
+            
+            {#if publishStatus}
+                <span class="publish-status">{publishStatus}</span>
+            {/if}
         {:else}
             <div class="mode-indicator">
                 <Icon src="/icons/eye.svg" size={0.8}></Icon>
@@ -169,6 +179,7 @@
             <button class="small" onclick={enterEditMode}>{$_('common.edit')}</button>
         {/if}
     </div>
+    <hr />
 {/if}
 
 <section class="summary-area">
@@ -248,8 +259,8 @@
                 <td>{Math.trunc(snap.finalDamage)}</td>
                 {#if isEditing}
                     <td>
-                        <button onclick={() => moves.value.splice(i, 1)}>
-                            <Icon src="/icons/close.svg"></Icon>
+                        <button class="delete-move" onclick={() => moves.value.splice(i, 1)}>
+                            <Icon src="/icons/close.svg" size={1}></Icon>
                         </button>
                     </td>
                 {/if}
@@ -280,6 +291,10 @@
 <style lang="scss">
     @use '@/style/variables' as *;
 
+    .filler {
+        flex-grow: 1;
+    }
+
     .panel {
         padding: $spacing-2;
 
@@ -309,6 +324,9 @@
             background-color: $clr-mono10;
             border: 1px solid $clr-mono20;
             border-radius: $rounded-md;
+        }
+
+        .publish-status {
         }
     }
 
@@ -397,11 +415,13 @@
         width: 100%;
         border-collapse: collapse;
 
-        button {
+        .delete-move {
             margin-left: auto;
             margin-right: auto;
-            display: block;
-            width: 100%;
+
+            width: $size-4;
+            height: $size-4;
+            padding: $spacing-2;
         }
 
         .move-name {
@@ -464,5 +484,11 @@
     .hint {
         font-size: 0.8em;
         color: $clr-mono70;
+    }
+
+    hr {
+        margin: $spacing-2 0;
+        border: none;
+        border-top: 1px solid $clr-mono30;
     }
 </style>

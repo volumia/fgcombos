@@ -141,7 +141,7 @@
     .division {
         display: grid;
         grid-template: 'a b' auto / 30% 70%;
-        gap: $spacing-4;
+        gap: $spacing-8;
 
         @include for-size(phone, down) {
             grid-template:

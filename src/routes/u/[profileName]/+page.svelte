@@ -28,6 +28,7 @@
 <main class="page">
     <div class="primary-area">
         <Avatar className="avatar-override"></Avatar>
+        <h2>{localProfile?.profile_name}</h2>
         
         {#if editing && localProfile != null}
             <ProfileEditorPanel
@@ -41,14 +42,12 @@
         {#if !editing}
             {#if localProfile != null && localProfile.id === data.pageProfile.id}
                 <ProfileInfoPanel
-                    profileName={localProfile.profile_name}
                     description={localProfile.description}
                     showEditButton={hasEditPermissions}
                     {startEditing}
                 ></ProfileInfoPanel>
             {:else}
                 <ProfileInfoPanel
-                    profileName={data.pageProfile.profile_name}
                     description={data.pageProfile.description}
                     showEditButton={hasEditPermissions}
                     {startEditing}

@@ -151,21 +151,19 @@
                         {/if}
                         <button
                             class={i == selectedMoveIndex ? 'move selected' : 'move'}
-                            onclick={() => onConfirm?.(move.move)}
+                            onclick={closeAndConfirm}
                             data-testid="add-move"
                         >
-                            <div class="row">
-                                <div>{move.notation}</div>
-                                <div class="name">{move.name}</div>
-                                <div class="filler"></div>
-                                <div class="damage">
-                                    <Icon src={'/icons/fist.svg'} />
-                                    {move.move.baseDamage}
-                                </div>
-                                <div class="proration">
-                                    <Icon src={'/icons/trend-down.svg'} />
-                                    {move.move.proration * 100}%
-                                </div>
+                            {move.notation}
+                            <div class="name">{move.name}</div>
+                            <div class="filler"></div>
+                            <div class="damage">
+                                <Icon src={'/icons/fist.svg'} />
+                                {move.move.baseDamage}
+                            </div>
+                            <div class="proration">
+                                <Icon src={'/icons/trend-down.svg'} />
+                                {move.move.proration * 100}%
                             </div>
                         </button>
                     {/each}
@@ -184,14 +182,19 @@
 
 <style lang="scss">
     @use '@/style/variables' as *;
+    @use 'sass:color';
 
     $clr-selected: rgb(0, 219, 183);
+    $clr-selected-hover: rgb(61, 249, 217);
     $clr-selected-border: rgb(2, 42, 35);
 
+    .filler {
+        flex-grow: 1;
+    }
+    
     button {
         margin: $spacing-1 0;
         padding: $spacing-1;
-        font-size: 1em;
     }
 
     .modal-wrapper > :global(dialog) {
@@ -259,35 +262,33 @@
     }
 
     button.move {
-        display: block;
-
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5ch;
         width: 100%;
-        text-align: start;
 
         background-color: $clr-mono10;
         color: $clr-mono90;
 
-        .row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0.5ch;
+        .name {
+            font-size: 0.8em;
+            color: $clr-mono80;
+        }
 
-            .name {
-                font-size: 0.8em;
-                color: $clr-mono80;
-            }
+        .damage,
+        .proration {
+            min-width: 6ch;
+            font-size: 0.8em;
+            color: $clr-mono80;
+        }
 
-            .filler {
-                flex-grow: 1;
-            }
+        &:hover {
+            background-color: color.mix($clr-mono10, $clr-mono20, 50%);
+        }
 
-            .damage,
-            .proration {
-                min-width: 6ch;
-                font-size: 0.8em;
-                color: $clr-mono80;
-            }
+        &:active {
+            background-color: color.mix($clr-mono20, $clr-mono30, 50%);
         }
 
         &.selected {
@@ -296,15 +297,17 @@
             border-color: $clr-selected-border;
             font-weight: 600;
 
-            .row {
-                .name {
-                    color: $clr-mono10;
-                }
+            .name {
+                color: $clr-mono10;
+            }
 
-                .damage,
-                .proration {
-                    color: $clr-mono10;
-                }
+            .damage,
+            .proration {
+                color: $clr-mono10;
+            }
+
+            &:hover {
+                background-color: $clr-selected-hover;
             }
         }
     }
