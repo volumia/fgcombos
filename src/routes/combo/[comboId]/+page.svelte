@@ -159,10 +159,10 @@
                 <Icon src="/icons/pencil.svg" size={0.8}></Icon>
                 {$_('edit.editing')}
             </div>
-            <button class="outlined small" onclick={cancelEdits} disabled={publishingChanges}>
+            <button class="outlined btn-small" onclick={cancelEdits} disabled={publishingChanges}>
                 {$_('common.cancelChanges')}
             </button>
-            <button class="small" onclick={publishEdits} disabled={publishingChanges}>
+            <button class="btn-small" onclick={publishEdits} disabled={publishingChanges}>
                 {$_('common.publishChanges')}
             </button>
 
@@ -259,7 +259,7 @@
                 <td>{Math.trunc(snap.finalDamage)}</td>
                 {#if isEditing}
                     <td>
-                        <button class="delete-move" onclick={() => moves.value.splice(i, 1)}>
+                        <button class="delete-move btn-flex" onclick={() => moves.value.splice(i, 1)}>
                             <Icon src="/icons/close.svg" size={1}></Icon>
                         </button>
                     </td>

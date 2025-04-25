@@ -18,14 +18,14 @@
 </script>
 
 <div class="actions-menu">
-    <a href={`/u/${userName}`} onclick={closeMenu} class="view-profile-button as-button">
+    <a href={`/u/${userName}`} onclick={closeMenu} class="view-profile-button as-button btn-block">
         <Avatar src={avatarUrl} size={2.5}></Avatar>
         <div class="text-stack">
             <p class="view-profile">{$_('user.actions.viewProfile')}</p>
             <p class="profile-name">{userName}</p>
         </div>
     </a>
-    <button onclick={signOut}>{$_('auth.signOut')}</button>
+    <button class="btn-block" onclick={signOut}>{$_('auth.signOut')}</button>
 </div>
 
 <style lang="scss">

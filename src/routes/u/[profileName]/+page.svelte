@@ -7,6 +7,8 @@
     import ProfileInfoPanel from './ProfileInfoPanel.svelte';
     import ProfileEditorPanel from './ProfileEditorPanel.svelte';
     import { getProfileContext } from '@/lib/state/profileContext';
+    import { getFullAvatarUrlOrDefault } from '@/lib/util/user';
+    import { Status, type StatusMessage } from '@/lib/util/statusMessage';
 
     let { data }: { data: PageData } = $props();
 
@@ -20,34 +22,38 @@
         editing = true;
     }
 
-    function cancelEdits() {
+    function stopEditing() {
         editing = false;
     }
 </script>
 
 <main class="page">
     <div class="primary-area">
-        <Avatar className="avatar-override"></Avatar>
-        <h2>{localProfile?.profile_name}</h2>
-        
+        <Avatar
+            src={getFullAvatarUrlOrDefault(data.pageProfile.avatar_url)}
+            className="avatar-override"
+        ></Avatar>
+
         {#if editing && localProfile != null}
             <ProfileEditorPanel
                 uid={localProfile.id}
                 initDescription={localProfile.description}
                 supabase={data.supabase}
-                close={cancelEdits}
+                close={stopEditing}
             ></ProfileEditorPanel>
         {/if}
 
         {#if !editing}
             {#if localProfile != null && localProfile.id === data.pageProfile.id}
                 <ProfileInfoPanel
+                    profileName={localProfile.profile_name}
                     description={localProfile.description}
                     showEditButton={hasEditPermissions}
                     {startEditing}
                 ></ProfileInfoPanel>
             {:else}
                 <ProfileInfoPanel
+                    profileName={data.pageProfile.profile_name}
                     description={data.pageProfile.description}
                     showEditButton={hasEditPermissions}
                     {startEditing}
@@ -76,7 +82,6 @@
 <style lang="scss">
     @use '@/style/variables' as *;
     @use '@/style/mixins' as *;
-
     .page {
         display: grid;
         grid-template: 'a b' auto / 20% 80%;
@@ -107,5 +112,17 @@
         height: auto !important;
         aspect-ratio: 1/1 !important;
         border: 3px solid $clr-mono20 !important;
+    }
+
+    .msg-error {
+        font-size: $text-sm;
+        color: $clr-red70;
+        margin: $spacing-2 0;
+    }
+
+    .msg-success {
+        font-size: $text-sm;
+        color: $clr-green70;
+        margin: $spacing-2 0;
     }
 </style>

@@ -23,13 +23,8 @@ body {
 
 button,
 .as-button {
-    display: inline-flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    
-    margin-top: $spacing-2;
-    margin-bottom: $spacing-2;
+    display: inline-block;
+
     padding: $spacing-1 $spacing-3;
 
     border: none;
@@ -41,8 +36,31 @@ button,
     text-decoration: none;
     text-align: center;
 
-    .block {
+    &.btn-block {
+        display: block;
+        width: fit-content;
+        margin-top: $spacing-2;
+        margin-bottom: $spacing-2;
+    }
+
+    &.btn-inline-flex {
+        display: inline-flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: $spacing-1;
+    }
+
+    &.btn-flex {
         display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: $spacing-1;
+
+        width: fit-content;
+        margin-top: $spacing-2;
+        margin-bottom: $spacing-2;
     }
 
     &:hover {
@@ -101,7 +119,7 @@ button,
         }
     }
 
-    &.small {
+    &.btn-small {
         font-size: $text-sm;
     }
 }
@@ -157,4 +175,11 @@ h2 {
 
 h3 {
     margin: $spacing-1 0;
+}
+
+// Utilities
+
+.util-center-x {
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -8,6 +8,7 @@
     import Avatar from './Avatar.svelte';
     import avatarDefaultUrl from '$lib/assets/avatars/default.jpg';
     import { getProfileContext } from '../state/profileContext';
+    import { getFullAvatarUrlOrDefault } from '../util/user';
 
     type Props = {
         user: User | null;
@@ -46,7 +47,7 @@
     <div class="side-separator"></div>
     {#if user != null}
         <button onclick={toggleActionsMenu} class="content-only">
-            <Avatar size={2}></Avatar>
+            <Avatar size={2} src={getFullAvatarUrlOrDefault(profile?.avatar_url)}></Avatar>
         </button>
     {:else}
         <a href="/auth/sign-in">{$_('auth.signIn')}</a>
@@ -55,7 +56,7 @@
     {#if showActionsMenu && profile && user}
         <UserActionsMenu
             userName={profile.profile_name}
-            avatarUrl={avatarDefaultUrl}
+            avatarUrl={getFullAvatarUrlOrDefault(profile?.avatar_url)}
             onSignOut={signOut}
             closeMenu={toggleActionsMenu}
         ></UserActionsMenu>

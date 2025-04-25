@@ -10,6 +10,7 @@
         "create": "Create",
         "loading": "Loading...",
         "pending": "Pending...",
+        "uploading": "Uploading...",
         "byUser": "By {name}",
         "likes": "{likes} likes",
         "damageNumber": "{dmg} DMG",
@@ -56,6 +57,12 @@
         "noUserNameFound": "(deleted)",
         "actions": {
             "viewProfile": "View profile"
+        },
+        "edit": {
+            "uploadAvatar": "Upload avatar",
+            "errorNoImage": "You must select an image to upload.",
+            "errorAvatarTooLarge": "Uploaded avatar is too large. File size must be {n} KB or lower.",
+            "successUploadedAvatar": "Successfully uploaded your avatar. It may take time for your avatar to update everywhere."
         }
     },
     "home": {
